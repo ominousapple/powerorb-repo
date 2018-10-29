@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 //comment 4
 
+    // test comment 
 public class PlayerPrefsStrings {
     #region Window Manager Prefs
     //Window Manager Uses this key to store/access saved resolution index 
