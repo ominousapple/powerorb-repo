@@ -1,0 +1,2 @@
+Scripts should be placed in their appropiate folder
+in case there is no such logically correct folder make a folder and write a HELP.txt file in it

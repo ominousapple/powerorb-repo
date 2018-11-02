@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class WindowManager : MonoBehaviour {
-
+    //Attributes
     #region Attributes
 
 
