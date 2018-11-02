@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UtilityAccess : MonoBehaviour {
     public static UtilityAccess instance = null;
-
+    //
 
     void Awake() {
         instance = this;
