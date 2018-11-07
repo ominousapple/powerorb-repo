@@ -5,10 +5,10 @@ using UnityEngine;
 public class KeyboardInput : InputIControllable
 {
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         
-        /* Example of how to set keyboard input for your Class that implements IControllable
+        // Example of how to set keyboard input for your Class that implements IControllable
         if (Input.GetKeyDown(KeyCode.A))
         {
             Attack_Key_Down();
@@ -19,17 +19,40 @@ public class KeyboardInput : InputIControllable
             Attack_Key_Up();
 
         }
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             Jump_Key_Down();
 
         }
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.UpArrow))
         {
             Jump_Key_Up();
 
         }
-        */
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Left_Key_Down();
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            Left_Key_Up();
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Right_Key_Down();
+        }
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            Right_Key_Up();
+        }
+        ChangedHorizontal(Input.GetAxis("Horizontal"));
+        ChangedVertical(Input.GetAxis("Vertical"));
+
+
+
+        // to do : add user orb 
+
     }
 
 
