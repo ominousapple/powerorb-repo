@@ -5,6 +5,9 @@ using UnityEngine;
 public class InputIControllable : MonoBehaviour
 {
 
+    float last_horizontal = 0;
+    float last_vertical = 0;
+
     [SerializeField]
     private GameObject ControllableGameObject;
 
@@ -77,6 +80,26 @@ public class InputIControllable : MonoBehaviour
     public void UseOrb_Key_Up()
     {
         controllable.UseOrb_Up();
+    }
+
+    public void ChangedHorizontal(float new_horizontal) {
+        if (last_horizontal != new_horizontal) {
+            last_horizontal = new_horizontal;
+            controllable.HorizontalInput(new_horizontal);
+        }
+       
+    }
+
+    public void ChangedVertical(float new_vertical)
+    {
+        if(last_vertical != new_vertical)
+        {
+            last_vertical = new_vertical;
+            controllable.VerticalInput(new_vertical);
+
+
+        }
+        
     }
 
 }

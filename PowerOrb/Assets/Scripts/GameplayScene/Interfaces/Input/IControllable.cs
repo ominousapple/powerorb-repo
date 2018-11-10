@@ -12,4 +12,7 @@
     void Attack_Up();
     void UseOrb_Up();
 
+    void HorizontalInput(float h_input);
+    void VerticalInput(float v_input);
+
 }
