@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    //Mnogo qko
 	// Use this for initialization
 	void Start () {
 		
