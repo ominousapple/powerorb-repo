@@ -178,16 +178,21 @@ public class Player : MonoBehaviour, IControllable {
 
     private void PlayerJumping()
     {
-        if (jumpRequest && extraJumps > 0)
+        if (jumpRequest)
         {
-            rb.velocity = new Vector3(0, 0, 0);
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            extraJumps--;
-            jumpRequest = false;
-            grounded = false;
-            animator.SetBool("isGrounded", grounded);
+            if (extraJumps > 0)
+            {
+                rb.velocity = new Vector3(0, 0, 0);
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                extraJumps--;
+                grounded = false;
+                animator.SetBool("isGrounded", grounded);
 
+            }
+
+            jumpRequest = false;
         }
+            
         
         //Check players interaction with masks
             Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
@@ -214,6 +219,7 @@ public class Player : MonoBehaviour, IControllable {
             rb.gravityScale = 1f;
         }
 
+   
 
     }
 
