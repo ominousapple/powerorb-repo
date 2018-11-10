@@ -189,6 +189,7 @@ public class Player : MonoBehaviour, IControllable {
 
         }
         
+        //Check players interaction with masks
             Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
             grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
         if (grounded)
