@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IControllable {
+public class Player : Character, IControllable, IInteractive
+{
 
 
     private float horizontalInput = 0;
@@ -233,7 +234,10 @@ public class Player : MonoBehaviour, IControllable {
     #endregion
 
 
-
+    void IInteractive.CollidedWithEnemy()
+    {
+        throw new System.NotImplementedException();
+    }
 
 
 
