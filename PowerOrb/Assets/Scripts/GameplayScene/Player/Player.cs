@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Player : Character, IControllable, IInteractive
 {
-
+   
 
     private float horizontalInput = 0;
-
+    
     public Animator animator;
 
 
@@ -107,6 +107,17 @@ public class Player : Character, IControllable, IInteractive
     {
         
     }
+
+
+    public void Interact_Down()
+    {
+      
+    }
+
+    public void Interact_Up()
+    {
+      
+    }
     #endregion
 
 
@@ -202,7 +213,7 @@ public class Player : Character, IControllable, IInteractive
             extraJumps = extraJumpsValue;
 
             animator.SetBool("isGrounded", grounded);
-            Debug.Log("grounded:"+grounded);
+            //Debug.Log("grounded:"+grounded);
         
 
 
@@ -233,11 +244,28 @@ public class Player : Character, IControllable, IInteractive
 
     #endregion
 
+    #region IInteractive Interface
 
-    void IInteractive.CollidedWithEnemy()
+
+    override public void CollidedWithEnemy(Collider2D collision)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Player touched an enemy");
     }
+    override public void CollidedWithEnemyAttack(Collider2D collision)
+    {
+        Debug.Log("Player got hit by an enemy");
+    }
+
+    override public void CollidedWithOrb(Collider2D collision)
+    {
+        Debug.Log("Player is touching orb");
+      
+        //Press F to Pickup
+    }
+
+
+    #endregion
+
 
 
 

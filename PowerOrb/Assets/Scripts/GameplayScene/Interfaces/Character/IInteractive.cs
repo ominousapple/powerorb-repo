@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IInteractive{
 
-    void CollidedWithEnemy();
-
+    void CollidedWithEnemy(Collider2D collision);
+    void CollidedWithEnemyAttack(Collider2D collision);
+    void CollidedWithOrb(Collider2D collision);
 }
