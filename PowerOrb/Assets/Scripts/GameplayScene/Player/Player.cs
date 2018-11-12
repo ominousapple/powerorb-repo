@@ -2,15 +2,337 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : Character, IControllable, IInteractive, IMortal
+{
+   
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private float horizontalInput = 0;
+    
+    public Animator animator;
+
+    #region Tiles Interactions
+    private int framesPerSecond = 60;
+    private int flashPerFrames = 6;
+    private int flash = 0;
+    private bool isFlashed = false;
+
+    private int secondsToBurn = 10;
+
+    private int isFire = 0;
+    #endregion
+
+    #region Attributes
+
+    private Rigidbody2D rb;
+
+    [SerializeField]
+    private float movementSpeed;
+
+
+
+    public float jumpForce;
+    public float groundedSkin = 0.05f; //distance for detection for raycast
+    public LayerMask mask;
+
+    bool jumpRequest;
+    bool grounded;
+
+    private int extraJumps;
+    public int extraJumpsValue;
+
+    Vector2 playerSize;
+    Vector2 boxSize;
+
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+
+    #endregion
+
+    //Interface Methods:
+
+    #region Extra abilities
+    public void Attack_Down()
+    {
+        Debug.Log("player shoots");
+    }
+
+    public void Attack_Up()
+    {
+        
+    }
+    public void UseOrb_Down()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void UseOrb_Up()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
+
+    #region Movement Abilities
+    public void Jump_Down()
+    {
+        if (grounded)
+        {
+            extraJumps = extraJumpsValue;
+        }
+        jumpRequest = true;
+        
+
+    }
+
+    public void Jump_Up()
+    {
+        StopJumping();
+    }
+
+
+    public void MoveLeft_Down()
+    {
+
+    }
+
+    public void MoveLeft_Up()
+    {
+       
+    }
+
+    public void MoveRight_Down()
+    {
+
+    }
+
+    public void MoveRight_Up()
+    {
+    }
+
+    public void HorizontalInput(float h_input)
+    {
+        horizontalInput = h_input;
+    }
+
+    public void VerticalInput(float v_input)
+    {
+        
+    }
+
+
+    public void Interact_Down()
+    {
+      
+    }
+
+    public void Interact_Up()
+    {
+      
+    }
+    #endregion
+
+    new void Start() {
+        base.Start();
+    }
+
+    // Use this for initialization
+    new void Awake()
+    {
+        base.Awake();
+        if (GetComponent<Rigidbody2D>() != null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
+        else {
+
+            Debug.LogError("The GameObject has no RigidBody2D Component: " + this);
+        }
+        extraJumps = extraJumpsValue;
+        playerSize = GetComponent<BoxCollider2D>().bounds.size;
+        boxSize = new Vector2(playerSize.x, groundedSkin);
+    }
+
+    new void Update () {
+        base.Update();
+
+        animator.SetFloat("Speed",Mathf.Abs( horizontalInput));  
+      
+    }
+
+    new void FixedUpdate () {
+        if (flash > 0) { flash--; } else { Flash(); flash = flashPerFrames; }
+        base.FixedUpdate();
+        
+            PlayerJumping();
+
+        if (GetIsCollidingWithFire()) {
+
+            if (isFire <= 0)
+            {
+                isFire = secondsToBurn * (framesPerSecond/flashPerFrames);
+                Debug.Log("Set on fire");
+                //GetComponent<SpriteRenderer>().color = Color.red;
+                //StartCoroutine(whitecolor());
+            }
+            else {
+                isFire = 12;
+            }
+            
+
+
+         
+        }
+        
+
+        rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+        Flip();
+
+
+
+        
+    }
+
+
+    #region Help Methods
+    private void Flip()
+    {
+        //GetKey returns true while user holds down the key identified by name
+        // public static bool GetKey(KeyCode key);
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            if (rb.velocity.x > 0)  //check if player is moving right
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            if (rb.velocity.x < 0) //check if player moving left
+            {
+                //Flip the sprite on the X axis
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+        }
+    }
+
+    private void StopMoving() {
+        rb.velocity = new Vector2(0 * movementSpeed, rb.velocity.y);
+
+    }
+
+
+    private void PlayerJumping()
+    {
+        if (jumpRequest)
+        {
+            if (extraJumps > 0)
+            {
+                rb.velocity = new Vector3(0, 0, 0);
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                extraJumps--;
+                grounded = false;
+                animator.SetBool("isGrounded", grounded);
+
+            }
+
+            jumpRequest = false;
+        }
+            
+        
+        //Check players interaction with masks
+            Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
+            grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
+        if (grounded)
+            extraJumps = extraJumpsValue;
+
+            animator.SetBool("isGrounded", grounded);
+            //Debug.Log("grounded:"+grounded);
+        
+
+
+        
+        if (rb.velocity.y < 0)
+        {
+            rb.gravityScale = fallMultiplier;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            rb.gravityScale = lowJumpMultiplier;
+        }
+        else
+        {
+            rb.gravityScale = 1f;
+        }
+
+   
+
+    }
+
+    public void StopJumping()
+    {
+        animator.SetBool("isGrounded", false);
+    }
+
+    private void Flash() {
+        if (isFire > 0)
+        {
+            TakeDamage(5);
+            isFire--;
+            if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
+            else
+            {
+                isFlashed = true;
+                GetComponent<SpriteRenderer>().color = Color.red;
+            }
+        }
+        else {
+            GetComponent<SpriteRenderer>().color = Color.white;
+
+        }
+
+    }
+
+    
+
+
+    #endregion
+
+    #region IInteractive Interface
+
+
+    override public void CollidedWithEnemy(Collider2D collision)
+    {
+        TakeDamage(10);
+        Debug.Log("Player touched an enemy");
+    }
+    override public void CollidedWithEnemyAttack(Collider2D collision)
+    {
+        Debug.Log("Player got hit by an enemy");
+    }
+
+    override public void CollidedWithOrb(Collider2D collision)
+    {
+        Debug.Log("Player is touching orb");
+      
+        //Press F to Pickup
+    }
+
+
+    #endregion
+
+
+    #region IMortal
+
+    override public void Died() {
+        //base.Died();
+        Debug.Log("Died");
+
+        //Change this:
+        gameObject.SetActive(false);
+    }
+
+
+    #endregion
+
+
 }
