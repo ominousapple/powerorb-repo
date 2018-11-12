@@ -252,6 +252,7 @@ public class Player : Character, IControllable, IInteractive
 
     override public void CollidedWithEnemy(Collider2D collision)
     {
+        TakeDamage(10);
         Debug.Log("Player touched an enemy");
     }
     override public void CollidedWithEnemyAttack(Collider2D collision)

@@ -18,7 +18,18 @@ public class collidableObjects{
     public const string Orb = "Orb";
     public const string Player = "Player";
 }
-public class Character : MonoBehaviour, IInteractive {
+public class Character : MonoBehaviour, IInteractive, IMortal {
+
+    #region Healthbar Methods/Attributes
+    [SerializeField]
+    private GameObject HealthbarUI = null;
+    private GameObject VisableHealth;
+    private bool isMortal = false;
+
+    private Healthbar healthbarClass;
+
+    #endregion
+
 
     #region isCollidingWith bools:
 
@@ -63,6 +74,16 @@ public class Character : MonoBehaviour, IInteractive {
 
     public void Awake()
     {
+        //Healthbar Setup
+        if (HealthbarUI != null) {
+            isMortal = true;
+            healthbarClass = new Healthbar();
+            VisableHealth = HealthbarUI.transform.GetChild(0).gameObject;
+            VisableHealth.transform.localScale = new Vector3 (healthbarClass.GetCurrentHealthPercent(),1f,1f);
+
+        }
+
+
         characterSize = GetComponent<BoxCollider2D>().bounds.size;
         boxCharSize = new Vector2(characterSize.x, touchedSkin);
     }
@@ -78,6 +99,7 @@ public class Character : MonoBehaviour, IInteractive {
     }
 
     public void FixedUpdate() {
+
         //Calculate boxCenter
         Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (characterSize.y + boxCharSize.y) * 0.5f;
 
@@ -177,10 +199,57 @@ public class Character : MonoBehaviour, IInteractive {
     }
 
 
+
+
     #endregion
 
 
 
+    #region IMortal Methods
 
+
+    public virtual void TakeDamage(int damageValue)
+    {
+        if (isMortal) {
+
+            healthbarClass.TakeDamage(damageValue);
+            VisableHealth.transform.localScale = new Vector3(healthbarClass.GetCurrentHealthPercent(),1,1);
+            if (healthbarClass.GetIsDead()) {
+                Died(); 
+                }
+
+        }  
+    }
+
+    public virtual void HealSelf(int damageValue)
+    {
+        if (isMortal)
+        {
+            healthbarClass.HealSelf(damageValue);
+            VisableHealth.transform.localScale = new Vector3(healthbarClass.GetCurrentHealthPercent(), 1, 1);
+
+        }
+    }
+
+    public virtual void Died()
+    {
+        if (isMortal)
+        {
+
+
+        }
+    }
+
+    public virtual void Revive()
+    {
+        if (isMortal)
+        {
+
+
+        }
+    }
+
+
+    #endregion
 
 }
