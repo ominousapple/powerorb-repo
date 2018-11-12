@@ -120,11 +120,14 @@ public class Player : Character, IControllable, IInteractive
     }
     #endregion
 
-
+    void Start() {
+        base.Start();
+    }
 
     // Use this for initialization
     void Awake()
     {
+        base.Awake();
         if (GetComponent<Rigidbody2D>() != null)
         {
             rb = GetComponent<Rigidbody2D>();
@@ -138,19 +141,19 @@ public class Player : Character, IControllable, IInteractive
         boxSize = new Vector2(playerSize.x, groundedSkin);
     }
 
-   
-
     void Update () {
-
+        base.Update();
 
         animator.SetFloat("Speed",Mathf.Abs( horizontalInput));  
       
     }
 
-	void FixedUpdate () {
-
+    void FixedUpdate () {
+        base.FixedUpdate();
         
             PlayerJumping();
+
+        if (GetIsCollidingWithFire()) { Debug.Log("Ouch touching fire");}
         
 
         rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
