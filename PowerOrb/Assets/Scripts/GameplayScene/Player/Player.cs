@@ -10,6 +10,16 @@ public class Player : Character, IControllable, IInteractive
     
     public Animator animator;
 
+    #region Tiles Interactions
+    private int framesPerSecond = 60;
+    private int flashPerFrames = 6;
+    private int flash = 0;
+    private bool isFlashed = false;
+
+    private int secondsToBurn = 10;
+
+    private int isFire = 0;
+    #endregion
 
     #region Attributes
 
@@ -120,12 +130,12 @@ public class Player : Character, IControllable, IInteractive
     }
     #endregion
 
-    void Start() {
+    new void Start() {
         base.Start();
     }
 
     // Use this for initialization
-    void Awake()
+    new void Awake()
     {
         base.Awake();
         if (GetComponent<Rigidbody2D>() != null)
@@ -141,24 +151,44 @@ public class Player : Character, IControllable, IInteractive
         boxSize = new Vector2(playerSize.x, groundedSkin);
     }
 
-    void Update () {
+    new void Update () {
         base.Update();
 
         animator.SetFloat("Speed",Mathf.Abs( horizontalInput));  
       
     }
 
-    void FixedUpdate () {
+    new void FixedUpdate () {
+        if (flash > 0) { flash--; } else { Flash(); flash = flashPerFrames; }
         base.FixedUpdate();
         
             PlayerJumping();
 
-        if (GetIsCollidingWithFire()) { Debug.Log("Ouch touching fire");}
+        if (GetIsCollidingWithFire()) {
+
+            if (isFire <= 0)
+            {
+                isFire = secondsToBurn * (framesPerSecond/flashPerFrames);
+                Debug.Log("Set on fire");
+                //GetComponent<SpriteRenderer>().color = Color.red;
+                //StartCoroutine(whitecolor());
+            }
+            else {
+                isFire = 12;
+            }
+            
+
+
+         
+        }
         
 
         rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
         Flip();
 
+
+
+        
     }
 
 
@@ -243,6 +273,25 @@ public class Player : Character, IControllable, IInteractive
         animator.SetBool("isGrounded", false);
     }
 
+    private void Flash() {
+        if (isFire > 0)
+        {
+            isFire--;
+            if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
+            else
+            {
+                isFlashed = true;
+                GetComponent<SpriteRenderer>().color = Color.red;
+            }
+        }
+        else {
+            GetComponent<SpriteRenderer>().color = Color.white;
+
+        }
+
+    }
+
+    
 
 
     #endregion
