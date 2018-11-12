@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character, IControllable, IInteractive
+public class Player : Character, IControllable, IInteractive, IMortal
 {
    
 
@@ -276,6 +276,7 @@ public class Player : Character, IControllable, IInteractive
     private void Flash() {
         if (isFire > 0)
         {
+            TakeDamage(5);
             isFire--;
             if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
             else
@@ -320,7 +321,18 @@ public class Player : Character, IControllable, IInteractive
     #endregion
 
 
+    #region IMortal
 
+    override public void Died() {
+        //base.Died();
+        Debug.Log("Died");
+
+        //Change this:
+        gameObject.SetActive(false);
+    }
+
+
+    #endregion
 
 
 }
