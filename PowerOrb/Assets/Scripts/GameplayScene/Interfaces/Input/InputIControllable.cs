@@ -13,7 +13,7 @@ public class InputIControllable : MonoBehaviour
 
     private IControllable controllable = null;
 
-    void Awake()
+    public void Awake()
     {
         MonoBehaviour[] list = ControllableGameObject.GetComponents<MonoBehaviour>();
         foreach (MonoBehaviour mb in list)

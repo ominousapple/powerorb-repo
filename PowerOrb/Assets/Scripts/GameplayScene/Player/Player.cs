@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IControllable {
-
+public class Player : Character, IControllable, IInteractive
+{
+   
 
     private float horizontalInput = 0;
-
+    
     public Animator animator;
 
 
@@ -106,13 +107,27 @@ public class Player : MonoBehaviour, IControllable {
     {
         
     }
+
+
+    public void Interact_Down()
+    {
+      
+    }
+
+    public void Interact_Up()
+    {
+      
+    }
     #endregion
 
-
+    void Start() {
+        base.Start();
+    }
 
     // Use this for initialization
     void Awake()
     {
+        base.Awake();
         if (GetComponent<Rigidbody2D>() != null)
         {
             rb = GetComponent<Rigidbody2D>();
@@ -126,19 +141,19 @@ public class Player : MonoBehaviour, IControllable {
         boxSize = new Vector2(playerSize.x, groundedSkin);
     }
 
-   
-
     void Update () {
-
+        base.Update();
 
         animator.SetFloat("Speed",Mathf.Abs( horizontalInput));  
       
     }
 
-	void FixedUpdate () {
-
+    void FixedUpdate () {
+        base.FixedUpdate();
         
             PlayerJumping();
+
+        if (GetIsCollidingWithFire()) { Debug.Log("Ouch touching fire");}
         
 
         rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
@@ -201,7 +216,7 @@ public class Player : MonoBehaviour, IControllable {
             extraJumps = extraJumpsValue;
 
             animator.SetBool("isGrounded", grounded);
-            Debug.Log("grounded:"+grounded);
+            //Debug.Log("grounded:"+grounded);
         
 
 
@@ -232,6 +247,27 @@ public class Player : MonoBehaviour, IControllable {
 
     #endregion
 
+    #region IInteractive Interface
+
+
+    override public void CollidedWithEnemy(Collider2D collision)
+    {
+        Debug.Log("Player touched an enemy");
+    }
+    override public void CollidedWithEnemyAttack(Collider2D collision)
+    {
+        Debug.Log("Player got hit by an enemy");
+    }
+
+    override public void CollidedWithOrb(Collider2D collision)
+    {
+        Debug.Log("Player is touching orb");
+      
+        //Press F to Pickup
+    }
+
+
+    #endregion
 
 
 
