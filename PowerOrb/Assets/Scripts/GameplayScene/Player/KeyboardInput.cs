@@ -5,7 +5,7 @@ using UnityEngine;
 public class KeyboardInput : InputIControllable
 {
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         
         // Example of how to set keyboard input for your Class that implements IControllable

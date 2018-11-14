@@ -35,6 +35,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     public LayerMask mask;
 
     bool jumpRequest;
+    bool lockJumpRequest = false;
     bool grounded;
 
     private int extraJumps;
@@ -75,18 +76,22 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #region Movement Abilities
     public void Jump_Down()
     {
+        if (!lockJumpRequest) { 
         if (grounded)
         {
-            extraJumps = extraJumpsValue;
+            //extraJumps = extraJumpsValue;
         }
         jumpRequest = true;
-        
+        lockJumpRequest = true;
+    }
+
 
     }
 
     public void Jump_Up()
     {
-        StopJumping();
+        lockJumpRequest = false;
+        //StopJumping();
     }
 
 
