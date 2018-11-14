@@ -32,7 +32,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
     [Tooltip("If you attach HealthbarUI, the character will become IMortal.")]
     private GameObject HealthbarUI = null;
 
-    //haha
+
 
     private GameObject VisableHealth;
     private bool isMortal = false;
