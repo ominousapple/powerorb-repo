@@ -60,7 +60,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
     public bool GetIsCollidingWithPlayer() { return isCollidingWithPlayer; }
 
     public bool GetIsCollidingWithFire() { return isCollidingWithFire; }
-    public bool GetIsCollidingWithSlime () { return isCollidingWithSlime; }
+    public bool GetIsCollidingWithSlime() { return isCollidingWithSlime; }
     public bool GetIsCollidingWithDirt() { return isCollidingWithDirt; }
     public bool GetIsCollidingWithIce() { return isCollidingWithIce; }
     public bool GetIsCollidingWithStone() { return isCollidingWithStone; }
@@ -90,6 +90,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
     public float GetCurrentGravityScale() {
         return currentGravityScale;
     }
+ 
 
     #endregion
 
@@ -274,7 +275,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
     {
         if (isMortal)
         {
-
+            
 
         }
     }
