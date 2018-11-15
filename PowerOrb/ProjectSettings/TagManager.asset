@@ -59,7 +59,7 @@ TagManager:
   - name: Lava
     uniqueID: 1869277219
     locked: 0
-  - name: Healthbar
+  - name: New Layer
     uniqueID: 866422299
     locked: 0
   - name: TalkWindow
@@ -71,9 +71,9 @@ TagManager:
   - name: New Layer
     uniqueID: 2205665383
     locked: 0
-  - name: BG
+  - name: MenuUI
     uniqueID: 1098324921
     locked: 0
-  - name: New Layer
+  - name: SceneFader
     uniqueID: 313479361
     locked: 0

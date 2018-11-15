@@ -48,9 +48,25 @@ public class UtilityAccess : MonoBehaviour {
             GameplayUIWindows.instance.DisableCompleteLevelUI();
     }
 
+    public void OpenFailLevelWinow()
+    {
+        if (GameplayUIWindows.instance != null)
+            GameplayUIWindows.instance.EnableDefeatUI();
+    }
+    public void CloseFailLevelWinow()
+    {
+        if (GameplayUIWindows.instance != null)
+            GameplayUIWindows.instance.DisableDefeatUI();
+    }
+
     public void StartStopMusic()
     {
             Debug.Log("Music Started/Stopped - feature not implemented yet");
+    }
+
+    public void QuitApplication()
+    {
+        Application.Quit();
     }
 
 
