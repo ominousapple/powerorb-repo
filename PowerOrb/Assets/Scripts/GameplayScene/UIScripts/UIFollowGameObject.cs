@@ -8,13 +8,12 @@ public class UIFollowGameObject : MonoBehaviour {
     [SerializeField]
     private GameObject Obj;
 
-    private Camera myCamera;
 
 
     private bool isScriptWorking = false;
 
     void Awake () {
-        myCamera= Camera.main;
+
         if (Obj != null)
             isScriptWorking = true;
 

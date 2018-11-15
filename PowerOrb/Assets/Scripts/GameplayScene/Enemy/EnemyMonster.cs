@@ -93,6 +93,12 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
         Debug.Log("Enemy is touching an orb");
     }
 
+    override public void CollidedWithPlayer(Collider2D collision)
+    {
+        TalkDialogue("Monster","I will kill you!",5);
+        Debug.Log("Collided with player");
+    }
+
 
     #endregion
 

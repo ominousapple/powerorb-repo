@@ -26,6 +26,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     [Tooltip("If you attach TalkWindow, the character will be able to talk.")]
     private GameObject TalkWindow = null;
 
+    private GameObject dialogueCanvasGameObject = null;
+
     private DialogueManager dialogueManager = null;
 
     private bool isTalkable = false;
@@ -47,6 +49,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     {
         if (isTalkable)
         {
+            
             Dialogue dlog = new Dialogue(1);
             dlog.name = name;
             dlog.sentences[0] = sentence;
@@ -218,6 +221,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         if (TalkWindow != null) {
             TalkWindow.SetActive(true);
             isTalkable = true;
+            //dialogueCanvasGameObject = TalkWindow.transform.GetChild(0).gameObject;
+            //dialogueCanvasGameObject.SetActive(false);
             dialogueManager = TalkWindow.GetComponent<DialogueManager>();
 
         }
@@ -280,6 +285,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 break;
             case collidableObjects.EndZone:
                 healthbarClass.Kill();
+                Died();
                 break;
             case collidableObjects.Fire:
                 isCollidingWithFire = true;
