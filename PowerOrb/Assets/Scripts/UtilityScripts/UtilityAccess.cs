@@ -12,7 +12,7 @@ public class UtilityAccess : MonoBehaviour {
     }
 
     #region SceneFader Utility
-    //Used by Buttons
+    //Used by Buttons (Mostly)
     public void SceneFaderLoadScene(string scene) {
         SceneFader.instance.Load_Scene(scene);
 
@@ -21,5 +21,13 @@ public class UtilityAccess : MonoBehaviour {
         return SceneFader.instance;
     }
     #endregion
+
+    #region Popup Menu Utility
+
+
+
+
+    #endregion
+
 
 }
