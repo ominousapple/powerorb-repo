@@ -10,7 +10,6 @@ public class UIFollowGameObject : MonoBehaviour {
 
     private Camera myCamera;
 
-    private RectTransform rt;
 
     private bool isScriptWorking = false;
 
@@ -19,7 +18,7 @@ public class UIFollowGameObject : MonoBehaviour {
         if (Obj != null)
             isScriptWorking = true;
 
-        rt = GetComponent<RectTransform>();
+        
     }
     void Start()
     {
@@ -32,9 +31,6 @@ public class UIFollowGameObject : MonoBehaviour {
         if (isScriptWorking)
         {
             transform.position = Obj.transform.position;
-            //Vector2 pos = RectTransformUtility.WorldToScreenPoint(myCamera, Obj.transform.position);
-           // RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, pos,myCamera,out pos);
-            //rt.position = pos;
         }
         
 
