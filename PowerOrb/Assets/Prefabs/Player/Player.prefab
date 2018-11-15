@@ -601,12 +601,15 @@ MonoBehaviour:
   dialogue:
     name: Mars
     sentences:
-    - fuck
+    - fuck fuck fuck
     - my...
     - life... ....
-    SecondsVisableSentence: 010000000200000003000000
+    SecondsVisableSentence: 010000000100000001000000
   TalkWindow: {fileID: 1644542902869114}
   FireOnPlayer: {fileID: 1715926249778500}
+  IceOnPlayer: {fileID: 0}
+  SlimeOnPlayer: {fileID: 0}
+  DirtOnPlayer: {fileID: 0}
   HealthbarUI: {fileID: 1878050072659882}
   touchedSkin: 0.05
   maskFire:

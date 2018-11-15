@@ -8,6 +8,8 @@ public class GameplayUIWindows : MonoBehaviour
     public static GameplayUIWindows instance = null;
 
     [SerializeField]
+    private Image FailUI;
+    [SerializeField]
     private Image PauseUI;
     [SerializeField]
     private Image CompleteLevelUI;
@@ -60,6 +62,20 @@ public class GameplayUIWindows : MonoBehaviour
         CompleteLevelUI.gameObject.SetActive(false);
     }
 
+    public void EnableDefeatUI()
+
+    {
+        PauseButton.gameObject.SetActive(false);
+        FailUI.gameObject.SetActive(true);
+
+
+    }
+    public void DisableDefeatUI()
+    {
+        PauseButton.gameObject.SetActive(true);
+        FailUI.gameObject.SetActive(false);
+
+    }
 
 
 
