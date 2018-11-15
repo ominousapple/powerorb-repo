@@ -7,4 +7,5 @@ public interface IMortal{
     void Died();
     void Revive();
 
+
 }

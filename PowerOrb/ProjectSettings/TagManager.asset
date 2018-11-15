@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Parallax
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -41,4 +43,28 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: EffectsBehindPlayer
+    uniqueID: 2354960149
+    locked: 0
+  - name: New Layer
+    uniqueID: 3784535843
+    locked: 0
+  - name: Player
+    uniqueID: 3762089863
+    locked: 0
+  - name: Blocks
+    uniqueID: 1594624415
+    locked: 0
+  - name: Lava
+    uniqueID: 1869277219
+    locked: 0
+  - name: New Layer
+    uniqueID: 866422299
+    locked: 0
+  - name: New Layer
+    uniqueID: 1532838417
+    locked: 0
+  - name: UI
+    uniqueID: 1308782199
     locked: 0
