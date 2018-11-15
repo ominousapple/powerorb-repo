@@ -16,9 +16,10 @@ public class Player : Character, IControllable, IInteractive, IMortal
     private int flash = 0;
     private bool isFlashed = false;
 
-    private int secondsToBurn = 2;
+    private int secondsToBurn = 3;
 
     private int isFire = 0;
+
     #endregion
 
     #region Attributes
@@ -28,7 +29,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     [SerializeField]
     private float movementSpeed;
 
-
+    bool IsDead;
 
     public float jumpForce;
     public float groundedSkin = 0.05f; //distance for detection for raycast
@@ -176,16 +177,19 @@ public class Player : Character, IControllable, IInteractive, IMortal
             {
                 isFire = secondsToBurn * (framesPerSecond/flashPerFrames);
                 Debug.Log("Set on fire");
+                SetOnFire(true);
+
                 //GetComponent<SpriteRenderer>().color = Color.red;
                 //StartCoroutine(whitecolor());
             }
             else {
+                
                 isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
             }
-            
-
-
          
+         
+
+
         }
         
 
@@ -282,7 +286,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     private void Flash() {
         if (isFire > 0)
         {
-            TakeDamage(1);
+            TakeDamage(5);
             isFire--;
             if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
             else
@@ -293,7 +297,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
         }
         else {
             GetComponent<SpriteRenderer>().color = Color.white;
-
+            SetOnFire(false);
         }
 
     }
@@ -330,11 +334,14 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #region IMortal
 
     override public void Died() {
-        //base.Died();
+        base.Died();
         Debug.Log("Died");
-
+        IsDead = true;
+        animator.SetBool("IsDead",IsDead);
+        // UtilityAccess menu when died
+        UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
         //Change this:
-        gameObject.SetActive(false);
+      //  gameObject.SetActive(false);
     }
 
 
