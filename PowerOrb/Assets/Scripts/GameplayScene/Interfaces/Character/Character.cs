@@ -4,6 +4,8 @@ using UnityEngine;
 
 
 
+
+
 public class collidableObjects{
     public const string Enemy = "Enemy";
     public const string Enemy_attack = "EnemyAttack";
@@ -15,7 +17,51 @@ public class collidableObjects{
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour, IInteractive, IMortal {
 
+    [Header("Talkable Object")]
+    #region Talk Methods/Attributes
 
+    [Tooltip("Enter Default Dialogue:")]
+    [SerializeField]
+    private Dialogue dialogue;
+
+    [SerializeField]
+    [Tooltip("If you attach TalkWindow, the character will be able to talk.")]
+    private GameObject TalkWindow = null;
+
+    private DialogueManager dialogueManager = null;
+
+    private bool isTalkable = false;
+
+    public void TalkDialogue() {
+        if (isTalkable) {
+            dialogueManager.StartDialogue(dialogue);
+        }
+    }
+    public void TalkDialogue(Dialogue SomeDialogue)
+    {
+        if (isTalkable)
+        {
+            dialogueManager.StartDialogue(SomeDialogue);
+        }
+    }
+
+    public void TalkDialogue(string name,string sentence,int secondsToWait)
+    {
+        if (isTalkable)
+        {
+            Dialogue dlog = new Dialogue(1);
+            dlog.name = name;
+            dlog.sentences[0] = sentence;
+            dlog.SecondsVisableSentence[0] = secondsToWait;
+            dialogueManager.StartDialogue(dlog);
+        }
+    }
+
+
+    #endregion
+
+
+    [Header("Firable Object")]
     #region Firebar Methods/Attributes
 
     [SerializeField]
@@ -27,6 +73,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
         FireOnPlayer.SetActive(active);
     }
     #endregion
+
+    [Header("Mortal Object")]
     #region Healthbar Methods/Attributes
     [SerializeField]
     [Tooltip("If you attach HealthbarUI, the character will become IMortal.")]
@@ -67,7 +115,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
 
     #endregion
 
-
+    [Header("Other Attributes")]
 
     #region Attributes
 
@@ -103,9 +151,16 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
             VisableHealth.transform.localScale = new Vector3 (healthbarClass.GetCurrentHealthPercent(),1f,1f);
 
         }
-
+        // Firebar Setup
         if (FireOnPlayer != null) {
             isFlamable = true;
+
+        }
+        // TalkWindow Setup
+
+        if (TalkWindow != null) {
+            isTalkable = true;
+            dialogueManager = TalkWindow.GetComponent<DialogueManager>();
 
         }
 
@@ -203,6 +258,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
                 break;
             case collidableObjects.Fire:
                 isCollidingWithFire = false;
+                TalkDialogue();
                 CharacterRigidBody2LavaFall();
                 break;
            
