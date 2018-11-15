@@ -9,12 +9,12 @@ public class KeyboardInput : InputIControllable
     {
         
         // Example of how to set keyboard input for your Class that implements IControllable
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Attack_Key_Down();
 
         }
-        if (Input.GetKeyUp(KeyCode.A))
+        if (Input.GetKeyUp(KeyCode.F))
         {
             Attack_Key_Up();
 

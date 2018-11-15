@@ -56,7 +56,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #region Extra abilities
     public void Attack_Down()
     {
-        Debug.Log("player shoots");
+        TalkDialogue("Mars","Damn he's huge",1);
     }
 
     public void Attack_Up()
