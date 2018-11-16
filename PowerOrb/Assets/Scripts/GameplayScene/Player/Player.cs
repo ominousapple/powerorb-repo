@@ -16,7 +16,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     private int flash = 0;
     private bool isFlashed = false;
 
-    private int secondsToBurn = 10;
+    private int secondsToBurn = 2;
 
     private int isFire = 0;
     #endregion
@@ -35,6 +35,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     public LayerMask mask;
 
     bool jumpRequest;
+    bool lockJumpRequest = false;
     bool grounded;
 
     private int extraJumps;
@@ -45,6 +46,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
+    
 
     #endregion
 
@@ -74,18 +76,22 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #region Movement Abilities
     public void Jump_Down()
     {
+        if (!lockJumpRequest) { 
         if (grounded)
         {
-            extraJumps = extraJumpsValue;
+            //extraJumps = extraJumpsValue;
         }
         jumpRequest = true;
-        
+        lockJumpRequest = true;
+    }
+
 
     }
 
     public void Jump_Up()
     {
-        StopJumping();
+        lockJumpRequest = false;
+        //StopJumping();
     }
 
 
@@ -174,7 +180,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
                 //StartCoroutine(whitecolor());
             }
             else {
-                isFire = 12;
+                isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
             }
             
 
@@ -253,15 +259,15 @@ public class Player : Character, IControllable, IInteractive, IMortal
         
         if (rb.velocity.y < 0)
         {
-            rb.gravityScale = fallMultiplier;
+            rb.gravityScale =  GetCurrentGravityScale() * fallMultiplier;
         }
         else if (rb.velocity.y > 0 && !Input.GetKeyDown(KeyCode.UpArrow))
         {
-            rb.gravityScale = lowJumpMultiplier;
+            rb.gravityScale = GetCurrentGravityScale() * lowJumpMultiplier;
         }
         else
         {
-            rb.gravityScale = 1f;
+            rb.gravityScale = GetCurrentGravityScale() * 1f;
         }
 
    
@@ -276,13 +282,13 @@ public class Player : Character, IControllable, IInteractive, IMortal
     private void Flash() {
         if (isFire > 0)
         {
-            TakeDamage(5);
+            TakeDamage(1);
             isFire--;
             if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
             else
             {
                 isFlashed = true;
-                GetComponent<SpriteRenderer>().color = Color.red;
+                GetComponent<SpriteRenderer>().color = new Color((float)255/255, (float)79/255, 0);
             }
         }
         else {

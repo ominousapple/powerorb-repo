@@ -4,6 +4,22 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
+    #region Animator
+    public Animator animator;
+
+    private float horizontalInput = 0;
+
+    new void Update()
+    {
+        base.Update();
+
+        animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+
+    }
+
+
+    #endregion
+
     #region IControllable Methods
     public void Attack_Down()
     {
@@ -17,7 +33,7 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     public void HorizontalInput(float h_input)
     {
-        
+        horizontalInput = h_input;
     }
 
     public void Interact_Down()
