@@ -30,6 +30,24 @@ public class InputIControllable : MonoBehaviour
         }
 
     }
+    public void Interact_Key_Down()
+    {
+
+        controllable.Interact_Down();
+    }
+    public void Interact_Key_Up()
+    {
+        controllable.Interact_Up();
+    }
+    public void DropOrb_Key_Down()
+    {
+        
+        controllable.DropOrb_Down();
+    }
+    public void DropOrb_Key_Up()
+    {
+        controllable.DropOrb_Up();
+    }
 
     public void Attack_Key_Down()
     {

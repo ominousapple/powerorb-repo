@@ -21,6 +21,13 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
     #endregion
 
     #region IControllable Methods
+    public void DropOrb_Down() {
+
+    }
+    public void DropOrb_Up() {
+
+    }
+
     public void Attack_Down()
     {
         Debug.Log("Monster attacks");
@@ -107,6 +114,12 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
     override public void CollidedWithOrb(Collider2D collision)
     {
         Debug.Log("Enemy is touching an orb");
+    }
+
+    override public void CollidedWithPlayer(Collider2D collision)
+    {
+        TalkDialogue("Monster","I will kill you!",5);
+        Debug.Log("Collided with player");
     }
 
 
