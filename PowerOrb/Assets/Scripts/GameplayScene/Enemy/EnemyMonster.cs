@@ -5,6 +5,13 @@ using UnityEngine;
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
     #region IControllable Methods
+    public void DropOrb_Down() {
+
+    }
+    public void DropOrb_Up() {
+
+    }
+
     public void Attack_Down()
     {
         Debug.Log("Monster attacks");

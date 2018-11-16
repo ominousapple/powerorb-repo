@@ -26,7 +26,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     [Tooltip("If you attach TalkWindow, the character will be able to talk.")]
     private GameObject TalkWindow = null;
 
-    private GameObject dialogueCanvasGameObject = null;
+    //private GameObject dialogueCanvasGameObject = null;
 
     private DialogueManager dialogueManager = null;
 
@@ -178,6 +178,12 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
 
     #region Attributes
 
+
+    [SerializeField]
+    private GameObject OrbPrefab;
+    private OrbType OrbInPocket = OrbType.None;
+
+
     private bool isDead = false;
     public float touchedSkin = 0.05f; //distance for detection for raycast
     public LayerMask maskFire;
@@ -277,6 +283,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
+                Debug.Log("AAAAAAA");
+                CollidedWithOrb(collision);
                 isCollidingWithOrb = true;
                 break;
             case collidableObjects.Player:
@@ -312,7 +320,6 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 isCollidingWithEnemy = false;
                 break;
             case collidableObjects.Enemy_attack:
-                CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
                 isCollidingWithOrb = false;
@@ -437,6 +444,35 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
 
     #endregion
 
+
+    #region Character methods:
+    #region Pocket methods:
+    public void SetPocketOrb(OrbType newPocketOrb)
+    {
+        if (OrbInPocket != OrbType.None) {
+            PlacePocketOrb(OrbInPocket);
+        }
+        OrbInPocket = newPocketOrb;
+        UtilityAccess.instance.SetOrbUI(newPocketOrb);
+    }
+    public void PlacePocketOrb(OrbType orbToPlace)
+    {
+        GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
+        PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
+        PlacedOrb.transform.position = gameObject.transform.position;
+        OrbInPocket = OrbType.None;
+        UtilityAccess.instance.SetOrbUI(OrbType.None);
+    }
+    public OrbType CheckPocketOrb()
+    {
+        return OrbInPocket;
+    }
+
+    #endregion
+
+
+
+    #endregion
 
 
 
