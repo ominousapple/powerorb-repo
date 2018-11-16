@@ -7,18 +7,25 @@ public class GameplayUIWindows : MonoBehaviour
 {
     public static GameplayUIWindows instance = null;
 
+
+    [SerializeField]
+    private GameObject OrbPrefab;
+
     [SerializeField]
     private Image FailUI;
     [SerializeField]
     private Image PauseUI;
     [SerializeField]
     private Image CompleteLevelUI;
+
     [SerializeField]
     private Button PauseButton;
+    [SerializeField]
+    private Image OrbUI;
 
     void Awake()
     {
-
+        OrbUI.gameObject.SetActive(false);
         //Check if instance already exists
         if (instance == null)
             instance = this;
@@ -74,6 +81,21 @@ public class GameplayUIWindows : MonoBehaviour
     {
         PauseButton.gameObject.SetActive(true);
         FailUI.gameObject.SetActive(false);
+
+    }
+
+    public void SetOrbUI(OrbType TypeOfUIOrb) {
+        if (TypeOfUIOrb != OrbType.None)
+        {
+            OrbUI.gameObject.SetActive(true);
+            int colorIndex = (int)TypeOfUIOrb;
+            OrbUI.GetComponent<Image>().color = OrbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+
+        }
+        else {
+            OrbUI.gameObject.SetActive(false);
+
+        }
 
     }
 

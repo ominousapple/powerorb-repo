@@ -7,8 +7,29 @@ public class KeyboardInput : InputIControllable
     // Update is called once per frame
     void Update()
     {
-        
+
         // Example of how to set keyboard input for your Class that implements IControllable
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            DropOrb_Key_Down();
+
+        }
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            DropOrb_Key_Up();
+
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact_Key_Down();
+
+        }
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            Interact_Key_Up();
+
+        }
         if (Input.GetKeyDown(KeyCode.F))
         {
             Attack_Key_Down();
