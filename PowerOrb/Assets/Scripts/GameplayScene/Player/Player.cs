@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character, IControllable, IInteractive, IMortal
+public class Player : Character, IControllable, IInteractive, IMortal, IElemental, ITalkable
 {
    
 
@@ -56,7 +56,7 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #region Extra abilities
     public void Attack_Down()
     {
-        Debug.Log("player shoots");
+        TalkDialogue("Mars","Damn he's huge",1);
     }
 
     public void Attack_Up()
@@ -346,6 +346,27 @@ public class Player : Character, IControllable, IInteractive, IMortal
 
 
     #endregion
+
+    #region IElemental
+    override public void SetOnFire(bool active)
+    {
+        base.SetOnFire(active);
+    }
+    override public void SetOnIce(bool active)
+    {
+        base.SetOnIce(active);
+    }
+    override public void SetOnSlime(bool active)
+    {
+        base.SetOnSlime(active);
+    }
+    override public void SetOnDirt(bool active)
+    {
+        base.SetOnDirt(active);
+    }
+
+    #endregion
+
 
 
 }
