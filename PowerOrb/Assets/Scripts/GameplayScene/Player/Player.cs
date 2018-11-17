@@ -28,7 +28,17 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     private Rigidbody2D rb;
 
     [SerializeField]
+    private GameObject playerHalo = null;
+
+    [SerializeField]
+    private GameObject orbPrefab = null;
+
+    [SerializeField]
     private float movementSpeed;
+
+    [Header("Jump Attributes")]
+    [SerializeField]
+   private int extraJumpTime = 10;
 
     bool IsDead;
 
@@ -48,7 +58,6 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
-    
 
     #endregion
 
@@ -72,12 +81,35 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     }
     public void UseOrb_Down()
     {
-        throw new System.NotImplementedException();
+        OrbType type = CheckPocketOrb();
+        int colorIndex = (int)type;
+
+        switch (type)
+        {   
+            case OrbType.JumpOrb :
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                StartCoroutine(giveExtraJump());
+                break;
+            case OrbType.InstantDeathOrb :
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                Suicide();
+                StartCoroutine(TurnHaloOnAndOff());
+                break;
+            case OrbType.HealthOrb:
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                HealSelf(100);
+                StartCoroutine(TurnHaloOnAndOff());
+                break;
+            default:
+                break;
+        }
+        ConsumeOrb();
+
     }
 
     public void UseOrb_Up()
     {
-        throw new System.NotImplementedException();
+       
     }
     #endregion
 
@@ -86,9 +118,9 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     {
         if (!lockJumpRequest) { 
         if (grounded)
-        {
-            //extraJumps = extraJumpsValue;
-        }
+            {
+                //extraJumps = extraJumpsValue;
+            }
         jumpRequest = true;
         lockJumpRequest = true;
     }
@@ -138,6 +170,25 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         if (GetIsCollidingWithOrb()) {
             SetPocketOrb(LastCollidedOrb.GetComponent<Orb>().GetOrb());
             Destroy(LastCollidedOrb);
+
+
+            OrbType type = CheckPocketOrb();
+
+            switch (type)
+            {
+                case OrbType.JumpOrb:
+                    TalkDialogue("Mighty jump awake",1);
+                    break;
+                case OrbType.InstantDeathOrb:
+                    TalkDialogue("I have a bad feeling about this one", 1);
+                    break;
+                case OrbType.HealthOrb:
+                    TalkDialogue("I feel amazing! Must be something in the air!", 1);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
     }
@@ -244,25 +295,33 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     private void PlayerJumping()
     {
+        //  if (GetIsCollidingWithSlime() || GetIsCollidingWithIce())
+        ///  {
+        //       jumpRequest = false;
+        //    }
+
+        MaskCheck();
         if (jumpRequest)
-        {
-            if (extraJumps > 0)
-            {
-                rb.velocity = new Vector3(0, 0, 0);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                extraJumps--;
-                grounded = false;
-                animator.SetBool("isGrounded", grounded);
+        {     if (extraJumps > 0)
+                {
+                    rb.velocity = new Vector3(0, 0, 0);
+                    rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                    extraJumps--;
+                    grounded = false;
+                    animator.SetBool("isGrounded", grounded);
 
-            }
+                }
 
-            jumpRequest = false;
+                jumpRequest = false;
+           
         }
             
         
         //Check players interaction with masks
+
             Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
             grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
+ 
         if (grounded)
             extraJumps = extraJumpsValue;
 
@@ -289,6 +348,21 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     }
 
+    public void MaskCheck()
+    {
+        if (GetIsCollidingWithSlime())
+        {  
+            jumpRequest = false;
+            movementSpeed = 1;
+
+        }else { movementSpeed = 5; }
+
+        if (GetIsCollidingWithIce())
+        {
+            jumpRequest = false;
+        }
+    }
+
     public void StopJumping()
     {
         animator.SetBool("isGrounded", false);
@@ -313,7 +387,33 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     }
 
+
+    IEnumerator giveExtraJump()
+    {
+       
+        extraJumpsValue = 5;
+        playerHalo.SetActive(true);
+       
     
+        yield return new WaitForSeconds(extraJumpTime);
+        playerHalo.SetActive(false);
+        extraJumpsValue = 1;
+    }
+
+    IEnumerator WaitOneSecondAndOpenFailWindow()
+    {
+        yield return new WaitForSeconds(1);
+        UtilityAccess.instance.OpenFailLevelWinow();
+        
+    }
+
+    IEnumerator TurnHaloOnAndOff()
+    {
+        playerHalo.SetActive(true);
+        yield return new WaitForSeconds(1);
+        playerHalo.SetActive(false);
+
+    }
 
 
     #endregion
@@ -348,16 +448,20 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #region IMortal
 
     override public void Died() {
+        SetOnFire(false);
         base.Died();
         Debug.Log("Died");
         IsDead = true;
         animator.SetBool("IsDead",IsDead);
-        // UtilityAccess menu when died
-        UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
-        //Change this:
-      //  gameObject.SetActive(false);
+
+        // UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
+        StartCoroutine(WaitOneSecondAndOpenFailWindow());
+       
+
+  
     }
 
+          
 
     #endregion
 
