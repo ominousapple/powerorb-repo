@@ -93,10 +93,12 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             case OrbType.InstantDeathOrb :
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 Suicide();
+                StartCoroutine(TurnHaloOnAndOff());
                 break;
             case OrbType.HealthOrb:
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 HealSelf(100);
+                StartCoroutine(TurnHaloOnAndOff());
                 break;
             default:
                 break;
@@ -404,6 +406,15 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         UtilityAccess.instance.OpenFailLevelWinow();
         
     }
+
+    IEnumerator TurnHaloOnAndOff()
+    {
+        playerHalo.SetActive(true);
+        yield return new WaitForSeconds(1);
+        playerHalo.SetActive(false);
+
+    }
+
 
     #endregion
 
