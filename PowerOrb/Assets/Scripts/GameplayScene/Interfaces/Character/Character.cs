@@ -58,6 +58,19 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         }
     }
 
+    public virtual void TalkDialogue( string sentence, int secondsToWait)
+    {
+        if (isTalkable)
+        {
+
+            Dialogue dlog = new Dialogue(1);
+            dlog.name = dialogue.name;
+            dlog.sentences[0] = sentence;
+            dlog.SecondsVisableSentence[0] = secondsToWait;
+            dialogueManager.StartDialogue(dlog);
+        }
+    }
+
 
     #endregion
 
@@ -415,8 +428,18 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
 
 
         }
-    }
 
+    }
+    
+
+    public virtual void Suicide()
+    {
+        if (isMortal)
+        {
+            healthbarClass.Kill();
+            Died();
+        }
+    }
 
 
     #endregion
@@ -471,6 +494,11 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         return OrbInPocket;
     }
 
+    public void ConsumeOrb()
+    {
+        OrbInPocket = OrbType.None;
+        UtilityAccess.instance.SetOrbUI(OrbType.None);
+    }
     #endregion
 
 
