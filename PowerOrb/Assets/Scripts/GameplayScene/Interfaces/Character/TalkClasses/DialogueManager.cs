@@ -7,7 +7,7 @@ public class DialogueManager : MonoBehaviour
 {
     private int defaultTime = 1;
 
-
+    public GameObject CanvasParentOfDialogue;
     public Text nameText;
     public Text dialogueText;
 
@@ -19,12 +19,16 @@ public class DialogueManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        CanvasParentOfDialogue.GetComponent<Canvas>().worldCamera = Camera.main;
+        CanvasParentOfDialogue.SetActive(false);
         sentences = new Queue<string>();
         sentencesSecondsBeforeNext = new Queue<int>();
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
+        CanvasParentOfDialogue.SetActive(true);
+        if (animator != null)
         animator.SetBool("IsOpen", true);
 
         nameText.text = dialogue.name + ":";
@@ -82,7 +86,15 @@ public class DialogueManager : MonoBehaviour
 
     void EndDialogue()
     {
-        animator.SetBool("IsOpen", false);
+        if (animator != null)
+            animator.SetBool("IsOpen", false);
+        CloseCanvasParent();
+
+
+    }
+
+    public void CloseCanvasParent() {
+        CanvasParentOfDialogue.SetActive(false);
     }
 
 }

@@ -16,19 +16,21 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     private int flash = 0;
     private bool isFlashed = false;
 
-    private int secondsToBurn = 2;
+    private int secondsToBurn = 3;
 
     private int isFire = 0;
+
     #endregion
 
     #region Attributes
-
+    private GameObject LastCollidedOrb = null;
+    private GameObject LastCollidedObject = null;
     private Rigidbody2D rb;
 
     [SerializeField]
     private float movementSpeed;
 
-
+    bool IsDead;
 
     public float jumpForce;
     public float groundedSkin = 0.05f; //distance for detection for raycast
@@ -53,9 +55,15 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     //Interface Methods:
 
     #region Extra abilities
+    public void DropOrb_Down() {
+        PlacePocketOrb(CheckPocketOrb());
+    }
+    public void DropOrb_Up() {
+
+    }
     public void Attack_Down()
     {
-        Debug.Log("player shoots");
+        TalkDialogue("Mars","Damn he's huge",1);
     }
 
     public void Attack_Up()
@@ -127,7 +135,11 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     public void Interact_Down()
     {
-      
+        if (GetIsCollidingWithOrb()) {
+            SetPocketOrb(LastCollidedOrb.GetComponent<Orb>().GetOrb());
+            Destroy(LastCollidedOrb);
+        }
+
     }
 
     public void Interact_Up()
@@ -176,16 +188,19 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             {
                 isFire = secondsToBurn * (framesPerSecond/flashPerFrames);
                 Debug.Log("Set on fire");
+                SetOnFire(true);
+
                 //GetComponent<SpriteRenderer>().color = Color.red;
                 //StartCoroutine(whitecolor());
             }
             else {
+                
                 isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
             }
-            
-
-
          
+         
+
+
         }
         
 
@@ -282,7 +297,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     private void Flash() {
         if (isFire > 0)
         {
-            TakeDamage(1);
+            TakeDamage(5);
             isFire--;
             if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
             else
@@ -293,7 +308,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         }
         else {
             GetComponent<SpriteRenderer>().color = Color.white;
-
+            SetOnFire(false);
         }
 
     }
@@ -319,8 +334,11 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     override public void CollidedWithOrb(Collider2D collision)
     {
         Debug.Log("Player is touching orb");
-      
-        //Press F to Pickup
+
+
+        LastCollidedOrb = collision.gameObject;
+
+
     }
 
 
@@ -330,11 +348,14 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #region IMortal
 
     override public void Died() {
-        //base.Died();
+        base.Died();
         Debug.Log("Died");
-
+        IsDead = true;
+        animator.SetBool("IsDead",IsDead);
+        // UtilityAccess menu when died
+        UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
         //Change this:
-        gameObject.SetActive(false);
+      //  gameObject.SetActive(false);
     }
 
 

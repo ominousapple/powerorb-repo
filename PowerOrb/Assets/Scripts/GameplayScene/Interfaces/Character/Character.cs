@@ -4,8 +4,6 @@ using UnityEngine;
 
 
 
-
-
 public class collidableObjects{
     public const string Enemy = "Enemy";
     public const string Enemy_attack = "EnemyAttack";
@@ -28,6 +26,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     [Tooltip("If you attach TalkWindow, the character will be able to talk.")]
     private GameObject TalkWindow = null;
 
+    //private GameObject dialogueCanvasGameObject = null;
+
     private DialogueManager dialogueManager = null;
 
     private bool isTalkable = false;
@@ -49,6 +49,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     {
         if (isTalkable)
         {
+            
             Dialogue dlog = new Dialogue(1);
             dlog.name = name;
             dlog.sentences[0] = sentence;
@@ -166,7 +167,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     public bool GetIsCollidingWithPlayer() { return isCollidingWithPlayer; }
 
     public bool GetIsCollidingWithFire() { return isCollidingWithFire; }
-    public bool GetIsCollidingWithSlime () { return isCollidingWithSlime; }
+    public bool GetIsCollidingWithSlime() { return isCollidingWithSlime; }
     public bool GetIsCollidingWithDirt() { return isCollidingWithDirt; }
     public bool GetIsCollidingWithIce() { return isCollidingWithIce; }
     public bool GetIsCollidingWithStone() { return isCollidingWithStone; }
@@ -176,6 +177,12 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     [Header("Other Attributes")]
 
     #region Attributes
+
+
+    [SerializeField]
+    private GameObject OrbPrefab;
+    private OrbType OrbInPocket = OrbType.None;
+
 
     private bool isDead = false;
     public float touchedSkin = 0.05f; //distance for detection for raycast
@@ -196,6 +203,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     public float GetCurrentGravityScale() {
         return currentGravityScale;
     }
+ 
 
     #endregion
 
@@ -219,6 +227,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         if (TalkWindow != null) {
             TalkWindow.SetActive(true);
             isTalkable = true;
+            //dialogueCanvasGameObject = TalkWindow.transform.GetChild(0).gameObject;
+            //dialogueCanvasGameObject.SetActive(false);
             dialogueManager = TalkWindow.GetComponent<DialogueManager>();
 
         }
@@ -273,6 +283,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
+                Debug.Log("AAAAAAA");
+                CollidedWithOrb(collision);
                 isCollidingWithOrb = true;
                 break;
             case collidableObjects.Player:
@@ -281,6 +293,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 break;
             case collidableObjects.EndZone:
                 healthbarClass.Kill();
+                Died();
                 break;
             case collidableObjects.Fire:
                 isCollidingWithFire = true;
@@ -307,7 +320,6 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 isCollidingWithEnemy = false;
                 break;
             case collidableObjects.Enemy_attack:
-                CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
                 isCollidingWithOrb = false;
@@ -317,7 +329,6 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 break;
             case collidableObjects.Fire:
                 isCollidingWithFire = false;
-                TalkDialogue();
                 CharacterRigidBody2LavaFall();
                 break;
            
@@ -401,7 +412,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     {
         if (isMortal)
         {
-            
+
 
         }
     }
@@ -433,6 +444,38 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
 
     #endregion
 
+
+    #region Character methods:
+    #region Pocket methods:
+    public void SetPocketOrb(OrbType newPocketOrb)
+    {
+        if (OrbInPocket != OrbType.None) {
+            PlacePocketOrb(OrbInPocket);
+        }
+        OrbInPocket = newPocketOrb;
+        UtilityAccess.instance.SetOrbUI(newPocketOrb);
+    }
+    public void PlacePocketOrb(OrbType orbToPlace)
+    {
+        if (orbToPlace != OrbType.None)
+        {
+            GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
+            PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
+            PlacedOrb.transform.position = gameObject.transform.position;
+            OrbInPocket = OrbType.None;
+            UtilityAccess.instance.SetOrbUI(OrbType.None);
+        }
+    }
+    public OrbType CheckPocketOrb()
+    {
+        return OrbInPocket;
+    }
+
+    #endregion
+
+
+
+    #endregion
 
 
 
