@@ -59,6 +59,12 @@ public class UtilityAccess : MonoBehaviour {
             GameplayUIWindows.instance.DisableDefeatUI();
     }
 
+    public void SetOrbUI(OrbType TypeOfOrb)
+    {
+        if (GameplayUIWindows.instance != null)
+            GameplayUIWindows.instance.SetOrbUI(TypeOfOrb);
+    }
+
     public void StartStopMusic()
     {
             Debug.Log("Music Started/Stopped - feature not implemented yet");

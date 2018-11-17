@@ -23,7 +23,8 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #endregion
 
     #region Attributes
-
+    private GameObject LastCollidedOrb = null;
+    private GameObject LastCollidedObject = null;
     private Rigidbody2D rb;
 
     [SerializeField]
@@ -54,6 +55,12 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     //Interface Methods:
 
     #region Extra abilities
+    public void DropOrb_Down() {
+        PlacePocketOrb(CheckPocketOrb());
+    }
+    public void DropOrb_Up() {
+
+    }
     public void Attack_Down()
     {
         TalkDialogue("Mars","Damn he's huge",1);
@@ -128,7 +135,11 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     public void Interact_Down()
     {
-      
+        if (GetIsCollidingWithOrb()) {
+            SetPocketOrb(LastCollidedOrb.GetComponent<Orb>().GetOrb());
+            Destroy(LastCollidedOrb);
+        }
+
     }
 
     public void Interact_Up()
@@ -346,8 +357,11 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     override public void CollidedWithOrb(Collider2D collision)
     {
         Debug.Log("Player is touching orb");
-      
-        //Press F to Pickup
+
+
+        LastCollidedOrb = collision.gameObject;
+
+
     }
 
 
