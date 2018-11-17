@@ -4,7 +4,78 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
+    #region Animator
+    public Animator animator;
+    #endregion
+
+    #region Other Methods
+
+    private float horizontalInput = 0;
+    private Rigidbody2D rb;
+    [SerializeField]
+    private float movementSpeed;
+
+
+    new void Awake()
+    {
+        base.Awake();
+        if (GetComponent<Rigidbody2D>() != null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
+        else
+        {
+
+            Debug.LogError("The GameObject has no RigidBody2D Component: " + this);
+        }
+    }
+
+    new void Update()
+    {
+        base.Update();
+
+        animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
+
+    } 
+    new void FixedUpdate()
+    {
+        rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+        Flip();
+    }
+
+    private void Flip()
+    {
+        //GetKey returns true while user holds down the key identified by name
+        // public static bool GetKey(KeyCode key);
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            if (rb.velocity.x > 0)  //check if player is moving right
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
+
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            if (rb.velocity.x < 0) //check if player moving left
+            {
+                //Flip the sprite on the X axis
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
+        }
+    }
+    #endregion
+
     #region IControllable Methods
+    public void DropOrb_Down() {
+
+    }
+    public void DropOrb_Up() {
+
+    }
+
+
+
     public void Attack_Down()
     {
         Debug.Log("Monster attacks");
@@ -17,7 +88,7 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     public void HorizontalInput(float h_input)
     {
-        
+        horizontalInput = h_input;
     }
 
     public void Interact_Down()
@@ -42,7 +113,7 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     public void MoveLeft_Down()
     {
-        Debug.Log("Monster walks left");
+        
     }
 
     public void MoveLeft_Up()
@@ -52,7 +123,7 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     public void MoveRight_Down()
     {
-        Debug.Log("Monster walks right");
+        
     }
 
     public void MoveRight_Up()
