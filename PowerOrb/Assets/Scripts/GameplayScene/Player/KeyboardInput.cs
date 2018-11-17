@@ -67,6 +67,15 @@ public class KeyboardInput : InputIControllable
         {
             Right_Key_Up();
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UseOrb_Key_Down();
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            UseOrb_Key_Up();
+        }
         ChangedHorizontal(Input.GetAxis("Horizontal"));
         ChangedVertical(Input.GetAxis("Vertical"));
 
