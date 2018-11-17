@@ -28,7 +28,17 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     private Rigidbody2D rb;
 
     [SerializeField]
+    private GameObject playerHalo = null;
+
+    [SerializeField]
+    private GameObject orbPrefab = null;
+
+    [SerializeField]
     private float movementSpeed;
+
+    [Header("Jump Attributes")]
+    [SerializeField]
+   private int extraJumpTime = 10;
 
     bool IsDead;
 
@@ -48,7 +58,6 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
-    
 
     #endregion
 
@@ -72,12 +81,33 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     }
     public void UseOrb_Down()
     {
-        throw new System.NotImplementedException();
+        OrbType type = CheckPocketOrb();
+        int colorIndex = (int)type;
+
+        switch (type)
+        {   
+            case OrbType.JumpOrb :
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                StartCoroutine(giveExtraJump());
+                break;
+            case OrbType.InstantDeathOrb :
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                Suicide();
+                break;
+            case OrbType.HealthOrb:
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                HealSelf(100);
+                break;
+            default:
+                break;
+        }
+        ConsumeOrb();
+
     }
 
     public void UseOrb_Up()
     {
-        throw new System.NotImplementedException();
+       
     }
     #endregion
 
@@ -138,6 +168,25 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         if (GetIsCollidingWithOrb()) {
             SetPocketOrb(LastCollidedOrb.GetComponent<Orb>().GetOrb());
             Destroy(LastCollidedOrb);
+
+
+            OrbType type = CheckPocketOrb();
+
+            switch (type)
+            {
+                case OrbType.JumpOrb:
+                    TalkDialogue("Mighty jump awake",1);
+                    break;
+                case OrbType.InstantDeathOrb:
+                    TalkDialogue("I have a bad feeling about this one", 1);
+                    break;
+                case OrbType.HealthOrb:
+                    TalkDialogue("I feel amazing! Must be something in the air!", 1);
+                    break;
+                default:
+                    break;
+            }
+
         }
 
     }
@@ -302,8 +351,10 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         if (GetIsCollidingWithSlime())
         {  
             jumpRequest = false;
-           
-        }
+            movementSpeed = 1;
+
+        }else { movementSpeed = 5; }
+
         if (GetIsCollidingWithIce())
         {
             jumpRequest = false;
@@ -334,8 +385,25 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     }
 
-    
 
+    IEnumerator giveExtraJump()
+    {
+       
+        extraJumpsValue = 5;
+        playerHalo.SetActive(true);
+       
+    
+        yield return new WaitForSeconds(extraJumpTime);
+        playerHalo.SetActive(false);
+        extraJumpsValue = 1;
+    }
+
+    IEnumerator WaitOneSecondAndOpenFailWindow()
+    {
+        yield return new WaitForSeconds(1);
+        UtilityAccess.instance.OpenFailLevelWinow();
+        
+    }
 
     #endregion
 
@@ -374,13 +442,15 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         Debug.Log("Died");
         IsDead = true;
         animator.SetBool("IsDead",IsDead);
-   
-       // UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
-        UtilityAccess.instance.OpenFailLevelWinow();
+
+        // UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
+        StartCoroutine(WaitOneSecondAndOpenFailWindow());
+       
 
   
     }
 
+          
 
     #endregion
 
