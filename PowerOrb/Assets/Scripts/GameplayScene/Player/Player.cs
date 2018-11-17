@@ -86,9 +86,9 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     {
         if (!lockJumpRequest) { 
         if (grounded)
-        {
-            //extraJumps = extraJumpsValue;
-        }
+            {
+                //extraJumps = extraJumpsValue;
+            }
         jumpRequest = true;
         lockJumpRequest = true;
     }
@@ -244,25 +244,33 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     private void PlayerJumping()
     {
+        //  if (GetIsCollidingWithSlime() || GetIsCollidingWithIce())
+        ///  {
+        //       jumpRequest = false;
+        //    }
+
+        MaskCheck();
         if (jumpRequest)
-        {
-            if (extraJumps > 0)
-            {
-                rb.velocity = new Vector3(0, 0, 0);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                extraJumps--;
-                grounded = false;
-                animator.SetBool("isGrounded", grounded);
+        {     if (extraJumps > 0)
+                {
+                    rb.velocity = new Vector3(0, 0, 0);
+                    rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                    extraJumps--;
+                    grounded = false;
+                    animator.SetBool("isGrounded", grounded);
 
-            }
+                }
 
-            jumpRequest = false;
+                jumpRequest = false;
+           
         }
             
         
         //Check players interaction with masks
+
             Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
             grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
+ 
         if (grounded)
             extraJumps = extraJumpsValue;
 
@@ -287,6 +295,19 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
    
 
+    }
+
+    public void MaskCheck()
+    {
+        if (GetIsCollidingWithSlime())
+        {  
+            jumpRequest = false;
+           
+        }
+        if (GetIsCollidingWithIce())
+        {
+            jumpRequest = false;
+        }
     }
 
     public void StopJumping()
@@ -348,14 +369,16 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #region IMortal
 
     override public void Died() {
+        SetOnFire(false);
         base.Died();
         Debug.Log("Died");
         IsDead = true;
         animator.SetBool("IsDead",IsDead);
-        // UtilityAccess menu when died
-        UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
-        //Change this:
-      //  gameObject.SetActive(false);
+   
+       // UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
+        UtilityAccess.instance.OpenFailLevelWinow();
+
+  
     }
 
 
