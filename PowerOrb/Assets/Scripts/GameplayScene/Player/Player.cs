@@ -291,8 +291,10 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         if (GetIsCollidingWithSlime())
         {  
             jumpRequest = false;
-           
-        }
+            movementSpeed = 1;
+
+        }else { movementSpeed = 5; }
+
         if (GetIsCollidingWithIce())
         {
             jumpRequest = false;
