@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Parallax
   - Fire
+  - EndZone
+  - Orb
+  - SetBG
   layers:
   - Default
   - TransparentFX
@@ -44,11 +47,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BG
+    uniqueID: 3784535843
+    locked: 0
+  - name: Orbs
+    uniqueID: 2794495631
+    locked: 0
   - name: EffectsBehindPlayer
     uniqueID: 2354960149
-    locked: 0
-  - name: New Layer
-    uniqueID: 3784535843
     locked: 0
   - name: Player
     uniqueID: 3762089863
@@ -62,9 +68,18 @@ TagManager:
   - name: New Layer
     uniqueID: 866422299
     locked: 0
-  - name: New Layer
+  - name: TalkWindow
     uniqueID: 1532838417
     locked: 0
   - name: UI
     uniqueID: 1308782199
+    locked: 0
+  - name: New Layer
+    uniqueID: 2205665383
+    locked: 0
+  - name: MenuUI
+    uniqueID: 1098324921
+    locked: 0
+  - name: SceneFader
+    uniqueID: 313479361
     locked: 0

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character, IControllable, IInteractive, IMortal
+public class Player : Character, IControllable, IInteractive, IMortal, IElemental, ITalkable
 {
    
 
@@ -23,7 +23,8 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #endregion
 
     #region Attributes
-
+    private GameObject LastCollidedOrb = null;
+    private GameObject LastCollidedObject = null;
     private Rigidbody2D rb;
 
     [SerializeField]
@@ -54,9 +55,15 @@ public class Player : Character, IControllable, IInteractive, IMortal
     //Interface Methods:
 
     #region Extra abilities
+    public void DropOrb_Down() {
+        PlacePocketOrb(CheckPocketOrb());
+    }
+    public void DropOrb_Up() {
+
+    }
     public void Attack_Down()
     {
-        Debug.Log("player shoots");
+        TalkDialogue("Mars","Damn he's huge",1);
     }
 
     public void Attack_Up()
@@ -79,9 +86,9 @@ public class Player : Character, IControllable, IInteractive, IMortal
     {
         if (!lockJumpRequest) { 
         if (grounded)
-        {
-            //extraJumps = extraJumpsValue;
-        }
+            {
+                //extraJumps = extraJumpsValue;
+            }
         jumpRequest = true;
         lockJumpRequest = true;
     }
@@ -128,7 +135,11 @@ public class Player : Character, IControllable, IInteractive, IMortal
 
     public void Interact_Down()
     {
-      
+        if (GetIsCollidingWithOrb()) {
+            SetPocketOrb(LastCollidedOrb.GetComponent<Orb>().GetOrb());
+            Destroy(LastCollidedOrb);
+        }
+
     }
 
     public void Interact_Up()
@@ -233,25 +244,33 @@ public class Player : Character, IControllable, IInteractive, IMortal
 
     private void PlayerJumping()
     {
+        //  if (GetIsCollidingWithSlime() || GetIsCollidingWithIce())
+        ///  {
+        //       jumpRequest = false;
+        //    }
+
+        MaskCheck();
         if (jumpRequest)
-        {
-            if (extraJumps > 0)
-            {
-                rb.velocity = new Vector3(0, 0, 0);
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                extraJumps--;
-                grounded = false;
-                animator.SetBool("isGrounded", grounded);
+        {     if (extraJumps > 0)
+                {
+                    rb.velocity = new Vector3(0, 0, 0);
+                    rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                    extraJumps--;
+                    grounded = false;
+                    animator.SetBool("isGrounded", grounded);
 
-            }
+                }
 
-            jumpRequest = false;
+                jumpRequest = false;
+           
         }
             
         
         //Check players interaction with masks
+
             Vector2 boxCenter = (Vector2)transform.position + Vector2.down * (playerSize.y + boxSize.y) * 0.5f;
             grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
+ 
         if (grounded)
             extraJumps = extraJumpsValue;
 
@@ -276,6 +295,19 @@ public class Player : Character, IControllable, IInteractive, IMortal
 
    
 
+    }
+
+    public void MaskCheck()
+    {
+        if (GetIsCollidingWithSlime())
+        {  
+            jumpRequest = false;
+           
+        }
+        if (GetIsCollidingWithIce())
+        {
+            jumpRequest = false;
+        }
     }
 
     public void StopJumping()
@@ -323,8 +355,11 @@ public class Player : Character, IControllable, IInteractive, IMortal
     override public void CollidedWithOrb(Collider2D collision)
     {
         Debug.Log("Player is touching orb");
-      
-        //Press F to Pickup
+
+
+        LastCollidedOrb = collision.gameObject;
+
+
     }
 
 
@@ -334,18 +369,41 @@ public class Player : Character, IControllable, IInteractive, IMortal
     #region IMortal
 
     override public void Died() {
+        SetOnFire(false);
         base.Died();
         Debug.Log("Died");
         IsDead = true;
         animator.SetBool("IsDead",IsDead);
-        // UtilityAccess menu when died
-        UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
-        //Change this:
-      //  gameObject.SetActive(false);
+   
+       // UtilityAccess.instance.SceneFaderLoadScene("GameplayScene");
+        UtilityAccess.instance.OpenFailLevelWinow();
+
+  
     }
 
 
     #endregion
+
+    #region IElemental
+    override public void SetOnFire(bool active)
+    {
+        base.SetOnFire(active);
+    }
+    override public void SetOnIce(bool active)
+    {
+        base.SetOnIce(active);
+    }
+    override public void SetOnSlime(bool active)
+    {
+        base.SetOnSlime(active);
+    }
+    override public void SetOnDirt(bool active)
+    {
+        base.SetOnDirt(active);
+    }
+
+    #endregion
+
 
 
 }

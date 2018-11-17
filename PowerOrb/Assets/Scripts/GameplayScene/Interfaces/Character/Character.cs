@@ -13,20 +13,127 @@ public class collidableObjects{
     public const string Fire = "Fire";
 }
 [RequireComponent(typeof(Rigidbody2D))]
-public class Character : MonoBehaviour, IInteractive, IMortal {
+public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalkable {
 
+    [Header("Talkable Object")]
+    #region Talk Methods/Attributes
 
-    #region Firebar Methods/Attributes
+    [Tooltip("Enter Default Dialogue:")]
+    [SerializeField]
+    private Dialogue dialogue;
 
     [SerializeField]
-    [Tooltip("If you attach Firebar, the character will become flamable when colliding with fire.")]
-    private GameObject FireOnPlayer = null;
-    private bool isFlamable = false;
+    [Tooltip("If you attach TalkWindow, the character will be able to talk.")]
+    private GameObject TalkWindow = null;
 
-    public void SetOnFire(bool active) {
-        FireOnPlayer.SetActive(active);
+    //private GameObject dialogueCanvasGameObject = null;
+
+    private DialogueManager dialogueManager = null;
+
+    private bool isTalkable = false;
+
+    public virtual void TalkDialogue() {
+        if (isTalkable) {
+            dialogueManager.StartDialogue(dialogue);
+        }
+    }
+    public virtual void TalkDialogue(Dialogue SomeDialogue)
+    {
+        if (isTalkable)
+        {
+            dialogueManager.StartDialogue(SomeDialogue);
+        }
+    }
+
+    public virtual void TalkDialogue(string name,string sentence,int secondsToWait)
+    {
+        if (isTalkable)
+        {
+            
+            Dialogue dlog = new Dialogue(1);
+            dlog.name = name;
+            dlog.sentences[0] = sentence;
+            dlog.SecondsVisableSentence[0] = secondsToWait;
+            dialogueManager.StartDialogue(dlog);
+        }
+    }
+
+
+    #endregion
+
+
+    [Header("Elemental Object")]
+    #region Elemental Methods/Attributes
+
+    [SerializeField]
+    [Tooltip("If you attach Firebar, the character will be flamable.")]
+    private GameObject FireOnPlayer = null;
+
+    [SerializeField]
+    [Tooltip("If you attach Icebar, the character will be icable.")]
+    private GameObject IceOnPlayer = null;
+
+
+    [SerializeField]
+    [Tooltip("If you attach Slimebar, the character will be slimable.")]
+    private GameObject SlimeOnPlayer = null;
+
+    [SerializeField]
+    [Tooltip("If you attach Dirtbar, the character will be dirtable.")]
+    private GameObject DirtOnPlayer = null;
+
+    private bool isElemental = false;
+
+    public virtual void SetOnFire(bool active) {
+        if (isElemental)
+        {
+        if (FireOnPlayer != null) { 
+            FireOnPlayer.SetActive(active);
+        }
+
+        } 
+    }
+
+    public virtual void SetOnIce(bool active)
+    {
+            if (isElemental)
+            {
+            if (IceOnPlayer != null)
+            {
+                IceOnPlayer.SetActive(active);
+            }
+
+        }
+        }
+
+    public virtual void SetOnSlime(bool active)
+    {
+        if (isElemental)
+        {
+            if (SlimeOnPlayer != null)
+            {
+                SlimeOnPlayer.SetActive(active);
+            }
+
+
+        }
+
+    }
+    public virtual void SetOnDirt(bool active)
+    {
+        if (isElemental)
+        {
+            if (DirtOnPlayer != null)
+            {
+                DirtOnPlayer.SetActive(active);
+            }
+
+        }
+
     }
     #endregion
+
+    [Header("Mortal Object")]
     #region Healthbar Methods/Attributes
     [SerializeField]
     [Tooltip("If you attach HealthbarUI, the character will become IMortal.")]
@@ -67,11 +174,17 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
 
     #endregion
 
-
+    [Header("Other Attributes")]
 
     #region Attributes
 
 
+    [SerializeField]
+    private GameObject OrbPrefab;
+    private OrbType OrbInPocket = OrbType.None;
+
+
+    private bool isDead = false;
     public float touchedSkin = 0.05f; //distance for detection for raycast
     public LayerMask maskFire;
     public LayerMask maskSlime;
@@ -104,9 +217,19 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
             VisableHealth.transform.localScale = new Vector3 (healthbarClass.GetCurrentHealthPercent(),1f,1f);
 
         }
+        // Firebar Setup
+        if (FireOnPlayer != null || IceOnPlayer != null || SlimeOnPlayer != null || DirtOnPlayer != null) {
+            isElemental = true;
 
-        if (FireOnPlayer != null) {
-            isFlamable = true;
+        }
+        // TalkWindow Setup
+
+        if (TalkWindow != null) {
+            TalkWindow.SetActive(true);
+            isTalkable = true;
+            //dialogueCanvasGameObject = TalkWindow.transform.GetChild(0).gameObject;
+            //dialogueCanvasGameObject.SetActive(false);
+            dialogueManager = TalkWindow.GetComponent<DialogueManager>();
 
         }
 
@@ -160,6 +283,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
                 CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
+                Debug.Log("AAAAAAA");
+                CollidedWithOrb(collision);
                 isCollidingWithOrb = true;
                 break;
             case collidableObjects.Player:
@@ -168,6 +293,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
                 break;
             case collidableObjects.EndZone:
                 healthbarClass.Kill();
+                Died();
                 break;
             case collidableObjects.Fire:
                 isCollidingWithFire = true;
@@ -194,7 +320,6 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
                 isCollidingWithEnemy = false;
                 break;
             case collidableObjects.Enemy_attack:
-                CollidedWithEnemyAttack(collision);
                 break;
             case collidableObjects.Orb:
                 isCollidingWithOrb = false;
@@ -255,7 +380,10 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
             healthbarClass.TakeDamage(damageValue);
             VisableHealth.transform.localScale = new Vector3(healthbarClass.GetCurrentHealthPercent(),1,1);
             if (healthbarClass.GetIsDead()) {
-                Died(); 
+                if (!isDead) {
+                    Died();
+                }
+                
                 }
 
         }  
@@ -275,7 +403,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
     {
         if (isMortal)
         {
-            
+            isDead = true;
 
         }
     }
@@ -316,6 +444,38 @@ public class Character : MonoBehaviour, IInteractive, IMortal {
 
     #endregion
 
+
+    #region Character methods:
+    #region Pocket methods:
+    public void SetPocketOrb(OrbType newPocketOrb)
+    {
+        if (OrbInPocket != OrbType.None) {
+            PlacePocketOrb(OrbInPocket);
+        }
+        OrbInPocket = newPocketOrb;
+        UtilityAccess.instance.SetOrbUI(newPocketOrb);
+    }
+    public void PlacePocketOrb(OrbType orbToPlace)
+    {
+        if (orbToPlace != OrbType.None)
+        {
+            GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
+            PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
+            PlacedOrb.transform.position = gameObject.transform.position;
+            OrbInPocket = OrbType.None;
+            UtilityAccess.instance.SetOrbUI(OrbType.None);
+        }
+    }
+    public OrbType CheckPocketOrb()
+    {
+        return OrbInPocket;
+    }
+
+    #endregion
+
+
+
+    #endregion
 
 
 
