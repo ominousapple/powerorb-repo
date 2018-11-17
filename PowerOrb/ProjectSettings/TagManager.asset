@@ -10,6 +10,7 @@ TagManager:
   - EndZone
   - Orb
   - SetBG
+  - MenuTurnAroundBox
   layers:
   - Default
   - TransparentFX
