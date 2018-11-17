@@ -457,11 +457,14 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     }
     public void PlacePocketOrb(OrbType orbToPlace)
     {
-        GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
-        PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
-        PlacedOrb.transform.position = gameObject.transform.position;
-        OrbInPocket = OrbType.None;
-        UtilityAccess.instance.SetOrbUI(OrbType.None);
+        if (orbToPlace != OrbType.None)
+        {
+            GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
+            PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
+            PlacedOrb.transform.position = gameObject.transform.position;
+            OrbInPocket = OrbType.None;
+            UtilityAccess.instance.SetOrbUI(OrbType.None);
+        }
     }
     public OrbType CheckPocketOrb()
     {
