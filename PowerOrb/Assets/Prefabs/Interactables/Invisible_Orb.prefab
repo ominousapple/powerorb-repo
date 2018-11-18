@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 95707408106965510}
   - component: {fileID: 114732411949844132}
   - component: {fileID: 58087183821570014}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Invisible_Orb
   m_TagString: Orb
   m_Icon: {fileID: 0}

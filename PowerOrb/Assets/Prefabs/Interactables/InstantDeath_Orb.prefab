@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 95166921310860148}
   - component: {fileID: 114162780389100650}
   - component: {fileID: 58942074875171128}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: InstantDeath_Orb
   m_TagString: Orb
   m_Icon: {fileID: 0}
