@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Player : Character, IControllable, IInteractive, IMortal, IElemental, ITalkable
 {
-   
-
+    #region Input Variables
+    private bool MovingLeft = false;
+    private bool MovingRight = false;
     private float horizontalInput = 0;
-    
+    #endregion
+
+
     public Animator animator;
 
     #region Tiles Interactions
@@ -34,6 +37,8 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     private GameObject orbPrefab = null;
 
     [SerializeField]
+    private float movementSpeedValue;
+    
     private float movementSpeed;
 
     [Header("Jump Attributes")]
@@ -137,21 +142,22 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     public void MoveLeft_Down()
     {
-
+        MovingLeft = true;
     }
 
     public void MoveLeft_Up()
     {
-       
+        MovingLeft = false;
     }
 
     public void MoveRight_Down()
     {
-
+        MovingRight = true;
     }
 
     public void MoveRight_Up()
     {
+        MovingRight = false;
     }
 
     public void HorizontalInput(float h_input)
@@ -267,24 +273,33 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     #region Help Methods
     private void Flip()
     {
+        if (rb.velocity.x > 0)  //check if player is moving right
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        } else if (rb.velocity.x < 0) {
+
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+
         //GetKey returns true while user holds down the key identified by name
         // public static bool GetKey(KeyCode key);
-        if (Input.GetKey(KeyCode.RightArrow))
+        /*
+        if (MovingRight)
         {
             if (rb.velocity.x > 0)  //check if player is moving right
             {
-                GetComponent<SpriteRenderer>().flipX = false;
+                
             }
 
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        else if (MovingLeft)
         {
             if (rb.velocity.x < 0) //check if player moving left
             {
                 //Flip the sprite on the X axis
                 GetComponent<SpriteRenderer>().flipX = true;
             }
-        }
+        }*/
     }
 
     private void StopMoving() {
@@ -355,7 +370,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             jumpRequest = false;
             movementSpeed = 1;
 
-        }else { movementSpeed = 5; }
+        }else { movementSpeed = movementSpeedValue; }
 
         if (GetIsCollidingWithIce())
         {
