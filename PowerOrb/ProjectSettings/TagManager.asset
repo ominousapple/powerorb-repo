@@ -11,6 +11,7 @@ TagManager:
   - Orb
   - SetBG
   - MenuTurnAroundBox
+  - Ghost
   layers:
   - Default
   - TransparentFX
@@ -28,8 +29,8 @@ TagManager:
   - Slime
   - Dirt
   - Other
-  - 
-  - 
+  - Ghost
+  - Orb
   - 
   - 
   - 

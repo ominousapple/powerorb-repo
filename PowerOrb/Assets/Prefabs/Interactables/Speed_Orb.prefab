@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 95499531401640254}
   - component: {fileID: 114094562762882230}
   - component: {fileID: 58620387046562332}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Speed_Orb
   m_TagString: Orb
   m_Icon: {fileID: 0}

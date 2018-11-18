@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 95960112177189470}
   - component: {fileID: 114997387247535424}
   - component: {fileID: 58772741595287014}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: FireResistance_Orb
   m_TagString: Orb
   m_Icon: {fileID: 0}

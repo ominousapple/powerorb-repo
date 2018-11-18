@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 95165328148113630}
   - component: {fileID: 114318896012491422}
   - component: {fileID: 58398559835530672}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Health_Orb
   m_TagString: Orb
   m_Icon: {fileID: 0}

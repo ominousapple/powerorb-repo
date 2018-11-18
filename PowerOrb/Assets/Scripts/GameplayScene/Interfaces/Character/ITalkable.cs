@@ -7,4 +7,5 @@ public interface ITalkable {
    void TalkDialogue();
    void TalkDialogue(Dialogue SomeDialogue);
    void TalkDialogue(string name, string sentence, int secondsToWait);
+   string GetName();
 }
