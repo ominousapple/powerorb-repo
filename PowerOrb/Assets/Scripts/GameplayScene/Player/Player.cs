@@ -41,6 +41,12 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     
     private float movementSpeed;
 
+    private int damageFromFire;
+    [SerializeField]
+    private int damageFromFireValue;
+    private int fireResistanceTime = 10;
+    private bool hasFireResistance ;
+
     [Header("Jump Attributes")]
     [SerializeField]
    private int extraJumpTime = 10;
@@ -104,6 +110,18 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 HealSelf(100);
                 StartCoroutine(TurnHaloOnAndOff());
+                break;
+            case OrbType.FireResistanceOrb :
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                StartCoroutine(FireResist());
+                break;
+            case OrbType.InvisibleOrb:
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                StartCoroutine(turnInvisible());
+                break;
+            case OrbType.SpeedOrb:
+                playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
+                StartCoroutine(getSuperSpeed());
                 break;
             default:
                 break;
@@ -191,6 +209,15 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
                 case OrbType.HealthOrb:
                     TalkDialogue("I feel amazing! Must be something in the air!", 1);
                     break;
+                case OrbType.SpeedOrb:
+                    TalkDialogue("Usain Bolt come at me bro!", 1);
+                    break;
+                case OrbType.InvisibleOrb:
+                    TalkDialogue("Time to sneak around!", 1);
+                    break;
+                case OrbType.FireResistanceOrb:
+                    TalkDialogue("Whoa it's getting hot in here!", 1);
+                    break;
                 default:
                     break;
             }
@@ -222,6 +249,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             Debug.LogError("The GameObject has no RigidBody2D Component: " + this);
         }
         extraJumps = extraJumpsValue;
+        damageFromFire = damageFromFireValue;
         playerSize = GetComponent<BoxCollider2D>().bounds.size;
         boxSize = new Vector2(playerSize.x, groundedSkin);
     }
@@ -243,9 +271,13 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
             if (isFire <= 0)
             {
-                isFire = secondsToBurn * (framesPerSecond/flashPerFrames);
-                Debug.Log("Set on fire");
-                SetOnFire(true);
+                if (!hasFireResistance)
+                {
+                    isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
+                    Debug.Log("Set on fire");
+                    SetOnFire(true);
+                }
+          
 
                 //GetComponent<SpriteRenderer>().color = Color.red;
                 //StartCoroutine(whitecolor());
@@ -281,25 +313,6 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             GetComponent<SpriteRenderer>().flipX = true;
         }
 
-        //GetKey returns true while user holds down the key identified by name
-        // public static bool GetKey(KeyCode key);
-        /*
-        if (MovingRight)
-        {
-            if (rb.velocity.x > 0)  //check if player is moving right
-            {
-                
-            }
-
-        }
-        else if (MovingLeft)
-        {
-            if (rb.velocity.x < 0) //check if player moving left
-            {
-                //Flip the sprite on the X axis
-                GetComponent<SpriteRenderer>().flipX = true;
-            }
-        }*/
     }
 
     private void StopMoving() {
@@ -310,11 +323,6 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     private void PlayerJumping()
     {
-        //  if (GetIsCollidingWithSlime() || GetIsCollidingWithIce())
-        ///  {
-        //       jumpRequest = false;
-        //    }
-
         MaskCheck();
         if (jumpRequest)
         {     if (extraJumps > 0)
@@ -378,16 +386,12 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         }
     }
 
-    public void StopJumping()
-    {
-        animator.SetBool("isGrounded", false);
-    }
-
     private void Flash() {
-        if (isFire > 0)
+        if (isFire > 0 && !hasFireResistance)
         {
-            TakeDamage(5);
+            TakeDamage(damageFromFire);
             isFire--;
+            //Debug.Log(hasFireResistance);
             if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
             else
             {
@@ -430,6 +434,39 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     }
 
+    IEnumerator FireResist()
+    {
+        damageFromFire = 0;
+        hasFireResistance = true;
+        SetOnFire(false);
+        playerHalo.SetActive(true);
+        yield return new WaitForSeconds(fireResistanceTime);
+        playerHalo.SetActive(false);
+        hasFireResistance = false;
+        SetOnFire(true);
+        damageFromFire = damageFromFireValue;
+    }
+
+    IEnumerator turnInvisible()
+    {
+        rb.tag = "Invisible";
+        rb.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 0.2f);
+        playerHalo.SetActive(true);
+        yield return new WaitForSeconds(10);
+        playerHalo.SetActive(false);
+        rb.GetComponent<SpriteRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
+        rb.tag = "Player";
+
+    }
+
+    IEnumerator getSuperSpeed()
+    {
+        movementSpeedValue = 15;
+        playerHalo.SetActive(true);
+        yield return new WaitForSeconds(10);
+        playerHalo.SetActive(false);
+        movementSpeedValue = 5;
+    }
 
     #endregion
 
@@ -438,11 +475,12 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
 
     override public void CollidedWithEnemy(Collider2D collision)
     {
-        TakeDamage(10);
+        TalkDialogue("He can't see me ", 2);
         Debug.Log("Player touched an enemy");
     }
     override public void CollidedWithEnemyAttack(Collider2D collision)
     {
+        TakeDamage(collision.gameObject.GetComponent<Character>().GetAttack_Damage());
         Debug.Log("Player got hit by an enemy");
     }
 
