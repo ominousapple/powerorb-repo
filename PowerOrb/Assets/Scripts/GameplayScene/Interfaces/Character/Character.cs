@@ -58,6 +58,24 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         }
     }
 
+    public virtual void TalkDialogue( string sentence, int secondsToWait)
+    {
+        if (isTalkable)
+        {
+
+            Dialogue dlog = new Dialogue(1);
+            dlog.name = GetName();
+            dlog.sentences[0] = sentence;
+            dlog.SecondsVisableSentence[0] = secondsToWait;
+            dialogueManager.StartDialogue(dlog);
+        }
+    }
+    public virtual string GetName()
+    {
+        return dialogue.name;
+    }
+
+
 
     #endregion
 
@@ -191,6 +209,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     public LayerMask maskDirt;
     public LayerMask maskIce;
     public LayerMask maskStone;
+    public LayerMask maskOrb;
     Vector2 characterSize;
     Vector2 boxCharSize;
 
@@ -261,6 +280,7 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         isCollidingWithIce = (Physics2D.OverlapBox(boxCenter, boxCharSize, 0f, maskIce) != null);
         isCollidingWithStone = (Physics2D.OverlapBox(boxCenter, boxCharSize, 0f, maskStone) != null);
 
+        
        
 
         //grounded = (Physics2D.OverlapBox(boxCenter, boxSize, 0f, mask) != null);
@@ -323,6 +343,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 break;
             case collidableObjects.Orb:
                 isCollidingWithOrb = false;
+                GetComponent<BoxCollider2D>().enabled = false;
+                GetComponent<BoxCollider2D>().enabled = true;
                 break;
             case collidableObjects.Player:
                 isCollidingWithPlayer = false;
@@ -415,8 +437,18 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
 
 
         }
-    }
 
+    }
+    
+
+    public virtual void Suicide()
+    {
+        if (isMortal)
+        {
+            healthbarClass.Kill();
+            Died();
+        }
+    }
 
 
     #endregion
@@ -457,17 +489,25 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     }
     public void PlacePocketOrb(OrbType orbToPlace)
     {
-        GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
-        PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
-        PlacedOrb.transform.position = gameObject.transform.position;
-        OrbInPocket = OrbType.None;
-        UtilityAccess.instance.SetOrbUI(OrbType.None);
+        if (orbToPlace != OrbType.None)
+        {
+            GameObject PlacedOrb = Instantiate(OrbPrefab, gameObject.transform.position, Quaternion.identity);
+            PlacedOrb.GetComponent<Orb>().SetOrb(orbToPlace);
+            PlacedOrb.transform.position = gameObject.transform.position;
+            OrbInPocket = OrbType.None;
+            UtilityAccess.instance.SetOrbUI(OrbType.None);
+        }
     }
     public OrbType CheckPocketOrb()
     {
         return OrbInPocket;
     }
 
+    public void ConsumeOrb()
+    {
+        OrbInPocket = OrbType.None;
+        UtilityAccess.instance.SetOrbUI(OrbType.None);
+    }
     #endregion
 
 
