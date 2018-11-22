@@ -12,6 +12,8 @@ TagManager:
   - SetBG
   - MenuTurnAroundBox
   - Ghost
+  - Invisible
+  - EnemyAttack
   layers:
   - Default
   - TransparentFX
