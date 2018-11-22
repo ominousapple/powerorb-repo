@@ -4,54 +4,48 @@ using UnityEngine;
 
 public class AIContolEnemyMonster : InputIControllable
 {
-    void FixedUpdate()
+    int horInp = -1;
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
-        if (Input.GetKeyDown(KeyCode.A))
+
+        if (collision.tag == "MenuTurnAroundBox")
         {
-            Attack_Key_Down();
+
+            horInp = -horInp;
+
+            ChangedHorizontal(0);
+            ChangedHorizontal(horInp);
+            //StartCoroutine(TalkEverySevenSeconds());
 
         }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            Attack_Key_Up();
 
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Jump_Key_Down();
 
-        }
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            Jump_Key_Up();
+    }
 
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Left_Key_Down();
-        }
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            Left_Key_Up();
-        }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        Debug.Log("Kappa");
+    }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Right_Key_Down();
-        }
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            Right_Key_Up();
-        }
-        ChangedHorizontal(Input.GetAxis("Horizontal"));
-        ChangedVertical(Input.GetAxis("Vertical"));
+    //IEnumerator TalkEverySevenSeconds()
+    //{
+
+    //    GetComponent<Player>().TalkDialogue();
+    //    yield return new WaitForSeconds(7);
+    //    ChangedHorizontal(horInp);
+
+    //}
+
+    void FixedUpdate() 
+    {
 
     }
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+       ChangedHorizontal(horInp);
+    }
 	
 	// Update is called once per frame
 	void Update () {
