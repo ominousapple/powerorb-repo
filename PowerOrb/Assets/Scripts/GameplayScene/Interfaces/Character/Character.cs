@@ -11,6 +11,7 @@ public class collidableObjects{
     public const string Player = "Player";
     public const string EndZone = "EndZone";
     public const string Fire = "Fire";
+    public const string Invisible = "Invisible";
 }
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalkable {
@@ -319,6 +320,9 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
                 isCollidingWithFire = true;
                 CharacterRigidBody2LavaFall();
                 break;
+            case collidableObjects.Invisible:
+                CollidedWithInvisible(collision);
+                break;
             default:
                 break;
         }
@@ -383,6 +387,9 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     public virtual void CollidedWithPlayer(Collider2D collision)
     {
 
+    }
+    public virtual void CollidedWithInvisible(Collider2D collision)
+    {
     }
 
 
@@ -508,6 +515,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         OrbInPocket = OrbType.None;
         UtilityAccess.instance.SetOrbUI(OrbType.None);
     }
+
+
     #endregion
 
 
@@ -515,5 +524,18 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
     #endregion
 
 
+    #region  Enemy Damage Attack methods and attributes
+    [SerializeField]
+    private int Attack_Damage = 0;
+
+    public int GetAttack_Damage() {
+        return Attack_Damage;
+    }
+    public void SetAttack_Damage(int new_Attack_Damage)
+    {
+         Attack_Damage = new_Attack_Damage;
+    }
+
+    #endregion
 
 }

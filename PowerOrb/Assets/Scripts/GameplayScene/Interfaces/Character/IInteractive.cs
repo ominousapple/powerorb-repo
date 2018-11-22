@@ -8,4 +8,5 @@ public interface IInteractive{
     void CollidedWithEnemyAttack(Collider2D collision);
     void CollidedWithOrb(Collider2D collision);
     void CollidedWithPlayer(Collider2D collision);
+    void CollidedWithInvisible(Collider2D collision);
 }

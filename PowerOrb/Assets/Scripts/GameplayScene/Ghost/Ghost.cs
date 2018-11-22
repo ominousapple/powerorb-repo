@@ -150,35 +150,10 @@ public class Ghost : Character, IControllable, IInteractive, IMortal, IElemental
             
         if (!givenQuest)
         {
-            if (collision.transform.position.x < transform.position.x)
-            {
-                if (lookingRight)
-                {
-                    GetComponent<SpriteRenderer>().flipX = true;
-                    lookingRight = false;
-                }
-            }
-            else
-            {
-                if (!lookingRight)
-                {
-                    GetComponent<SpriteRenderer>().flipX = false;
-                    lookingRight = true;
-                }
-
-            }
+            FlipAccordingToCollidedObject(collision);
             TalkDialogueQuest();
                 givingQuest = true;
                 StartCoroutine(WaitToGiveQuest());
-
-
-
-
-
-
-
-
-
 
         }
         else
@@ -249,6 +224,15 @@ public class Ghost : Character, IControllable, IInteractive, IMortal, IElemental
 
 
     }
+
+    public override void CollidedWithInvisible(Collider2D collision)
+    {
+        TalkDialogue("Hmmm...must be the wind ", 2);
+        FlipAccordingToCollidedObject(collision);
+
+    }
+
+
     #endregion
     #region IMortal Methods:
     #endregion
@@ -322,7 +306,8 @@ public class Ghost : Character, IControllable, IInteractive, IMortal, IElemental
     private void GhostTrashTalk() {
 
         string TrashTalk = "What is this trash? ";
-        switch (Random.Range(0, 3))
+        int randomInt = Random.Range(0, 3);
+        switch (randomInt)
         {
             case 0:
                 TrashTalk += "You're sort of like an inverse Einstein.";
@@ -355,6 +340,27 @@ public class Ghost : Character, IControllable, IInteractive, IMortal, IElemental
         TalkDialogue(talkDialogueQuest);
     }
 
+
+    private void FlipAccordingToCollidedObject(Collider2D collision)
+    {
+        if (collision.transform.position.x < transform.position.x)
+        {
+            if (lookingRight)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+                lookingRight = false;
+            }
+        }
+        else
+        {
+            if (!lookingRight)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+                lookingRight = true;
+            }
+
+        }
+    }
     #endregion
 
 }
