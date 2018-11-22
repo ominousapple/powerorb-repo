@@ -74,6 +74,12 @@ public class Healthbar{
         isDead = false;
     }
 
+    public void Kill()
+    {
+        currentHealth = 0;
+        isDead = true;
+    }
+
 
     #endregion
 

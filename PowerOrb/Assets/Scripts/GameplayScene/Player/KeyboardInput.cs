@@ -5,16 +5,37 @@ using UnityEngine;
 public class KeyboardInput : InputIControllable
 {
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        
+
         // Example of how to set keyboard input for your Class that implements IControllable
-        if (Input.GetKeyDown(KeyCode.A))
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            DropOrb_Key_Down();
+
+        }
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            DropOrb_Key_Up();
+
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact_Key_Down();
+
+        }
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            Interact_Key_Up();
+
+        }
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Attack_Key_Down();
 
         }
-        if (Input.GetKeyUp(KeyCode.A))
+        if (Input.GetKeyUp(KeyCode.F))
         {
             Attack_Key_Up();
 
@@ -45,6 +66,15 @@ public class KeyboardInput : InputIControllable
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             Right_Key_Up();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UseOrb_Key_Down();
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            UseOrb_Key_Up();
         }
         ChangedHorizontal(Input.GetAxis("Horizontal"));
         ChangedVertical(Input.GetAxis("Vertical"));
