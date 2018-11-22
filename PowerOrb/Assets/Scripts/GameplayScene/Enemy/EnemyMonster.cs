@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
     #region Animator
@@ -10,13 +11,34 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     #region Other Methods
 
+    #region Stuck Movement fix attributes/method:
+    [Header("Unstuck Attributes:")]
+    private bool isMovingHorizontal = false;
+    Vector2 curPos, lastPos;
+    [SerializeField]
+    private int UnstuckJumpForce = 10;//Adjust According to RigidBodyMass
+    private void Unstuck()
+    {
+        
+            curPos = transform.position;
+            if (curPos == lastPos)
+            {
+            if (isMovingHorizontal) {
+                
+                rb.AddForce(Vector2.up * UnstuckJumpForce, ForceMode2D.Impulse);
+            }
+                
+            }
+            lastPos = curPos;
+        
+    }
+    #endregion
+
+
     private float horizontalInput = 0;
     private Rigidbody2D rb;
     [SerializeField]
     private float movementSpeed;
-
-    public float fallMultiplier = 2.5f;
-    public float lowJumpMultiplier = 2f;
 
 
     new void Awake()
@@ -39,42 +61,43 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
 
-    } 
+    }
+
+    //bool WakeUPBIACH = false;;
     new void FixedUpdate()
     {
-        if (rb.velocity.y < -0.01)
-        {
-            rb.gravityScale = GetCurrentGravityScale() * fallMultiplier;
-        }
-        else if (rb.velocity.y > 0.01)
-        {
-            rb.gravityScale = GetCurrentGravityScale() * lowJumpMultiplier;
-        }
-        else
-        {
-            rb.gravityScale = GetCurrentGravityScale() * 1f;
-        }
 
+        rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y);
 
-        rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+        isMovingHorizontal = rb.velocity.x != 0;
+        Unstuck();
         Flip();
+        
+    }
 
     
-    }
+ 
+
+
 
     private void Flip()
     {
+        //GetKey returns true while user holds down the key identified by name
+        // public static bool GetKey(KeyCode key);
+     
             if (rb.velocity.x > 0)  //check if player is moving right
             {
                 GetComponent<SpriteRenderer>().flipX = false;
             }
 
+        
        
             if (rb.velocity.x < 0) //check if player moving left
             {
                 //Flip the sprite on the X axis
                 GetComponent<SpriteRenderer>().flipX = true;
-            }    
+            }
+        
     }
     #endregion
 
