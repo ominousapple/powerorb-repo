@@ -4,6 +4,29 @@ using UnityEngine;
 
 public class Player : Character, IControllable, IInteractive, IMortal, IElemental, ITalkable
 {
+
+    #region Stuck Movement fix attributes/method:
+    [Header("Unstuck Attributes:")]
+    Vector2 curPos, lastPos;
+    private bool isMovingHorizontal = false;
+    [SerializeField]
+    private int UnstuckJumpForce = 1;//Adjust According to RigidBodyMass
+    private void Unstuck()
+    {
+
+        curPos = transform.position;
+        if (curPos == lastPos)
+        {
+            if (isMovingHorizontal)
+            {
+                rb.AddForce(Vector2.up * UnstuckJumpForce, ForceMode2D.Impulse);
+            }
+        }
+        lastPos = curPos;
+
+    }
+    #endregion
+
     #region Input Variables
     private bool MovingLeft = false;
     private bool MovingRight = false;
@@ -294,6 +317,10 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         
 
         rb.velocity = new Vector2(horizontalInput * movementSpeed, rb.velocity.y);
+
+
+        isMovingHorizontal = rb.velocity.x != 0;
+        Unstuck();
         Flip();
 
 
@@ -467,6 +494,9 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
         playerHalo.SetActive(false);
         movementSpeedValue = 5;
     }
+
+
+
 
     #endregion
 
