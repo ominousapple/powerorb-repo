@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class AIContolEnemyMonster : InputIControllable
 {
-    int horInp = -1;
+    int horInp = 0;
+
+    [SerializeField]
+    public Transform Player;
+    public float moveSpeed;
 
     void OnTriggerEnter2D(Collider2D collision)
     {
 
         if (collision.tag == "MenuTurnAroundBox")
         {
-
             horInp = -horInp;
 
             ChangedHorizontal(0);
@@ -20,7 +23,15 @@ public class AIContolEnemyMonster : InputIControllable
 
         }
 
+        if(collision.tag == "Player")
+        {
+            Chase();
+        }
+    }
 
+    void Chase()
+    {
+        transform.position = Vector2.MoveTowards(transform.position, new Vector2(Player.position.x, transform.position.y), moveSpeed * Time.deltaTime);
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -37,18 +48,20 @@ public class AIContolEnemyMonster : InputIControllable
 
     //}
 
-    void FixedUpdate() 
+    void FixedUpdate()
     {
 
     }
 
-	// Use this for initialization
-	void Start () {
-       ChangedHorizontal(horInp);
+    // Use this for initialization
+    void Start()
+    {
+        ChangedHorizontal(horInp);
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 }

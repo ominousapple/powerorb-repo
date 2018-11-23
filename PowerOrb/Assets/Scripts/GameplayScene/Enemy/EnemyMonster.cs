@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
+    //[SerializeField]
+    //public Transform Player;
+    //public float PlayerDistanceNeeded = 3f;
+    //public float playerDistance;
+    //public float rotationSpeed;
+    //public float moveSpeed;
+
     #region Animator
     public Animator animator;
     #endregion
@@ -63,20 +70,23 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     }
 
-    //bool WakeUPBIACH = false;;
-    new void FixedUpdate()
-    {
 
+
+
+
+//bool WakeUPBIACH = false;;
+new void FixedUpdate()
+    {
         rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y);
 
         isMovingHorizontal = rb.velocity.x != 0;
         Unstuck();
         Flip();
-        
+
     }
 
-    
- 
+
+
 
 
 
@@ -201,8 +211,12 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     override public void CollidedWithPlayer(Collider2D collision)
     {
-        TalkDialogue("Monster","I will kill you!",5);
+        
+        TalkDialogue("Monster", "Gosho, prost li si we, ne vijdash li, che sum losh, mama ti deba..", 3);
+
+
         Debug.Log("Collided with player");
+
     }
 
 
