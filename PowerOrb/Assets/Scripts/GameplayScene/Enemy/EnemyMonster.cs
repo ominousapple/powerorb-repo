@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
-
+    public float fallMultiplier = 3.5f;
+    public float lowJumpMultiplier = 2f;
     [SerializeField]
     private GameObject EnemyAttack;
 
@@ -132,11 +133,24 @@ new void FixedUpdate()
         Flip();
 
 
+        //Gravity hot fix
+        if (rb.velocity.y < 0)
+        {
+            rb.gravityScale = GetCurrentGravityScale() * fallMultiplier;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            rb.gravityScale = GetCurrentGravityScale() * lowJumpMultiplier;
+        }
+        else
+        {
+            rb.gravityScale = GetCurrentGravityScale() * 1f;
+        }
 
     }
 
 
-
+   
 
     private void Flash()
     {

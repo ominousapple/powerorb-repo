@@ -466,8 +466,8 @@ public class Character : MonoBehaviour, IInteractive, IMortal, IElemental, ITalk
         if (isCollidingWithFire)
         {
             gameObject.GetComponent<Rigidbody2D>().velocity = (gameObject.GetComponent<Rigidbody2D>().velocity  + 5 * new Vector2(0, 0) ) /6;
-            gameObject.GetComponent<Rigidbody2D>().gravityScale = 0.01f;
-            currentGravityScale = 0.01f;
+            gameObject.GetComponent<Rigidbody2D>().gravityScale = 0.05f;
+            currentGravityScale = 0.05f;
             
 
         }
