@@ -5,12 +5,25 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
-    //[SerializeField]
-    //public Transform Player;
-    //public float PlayerDistanceNeeded = 3f;
-    //public float playerDistance;
-    //public float rotationSpeed;
-    //public float moveSpeed;
+
+    [SerializeField]
+    private GameObject EnemyAttack;
+
+    [SerializeField]
+    private int damageFromFire;
+    private int damageFromFireValue;
+
+    private int framesPerSecond = 60;
+    private int flashPerFrames = 6;
+    private int flash = 0;
+    private bool isFlashed = false;
+
+    private int secondsToBurn = 3;
+
+    private int isFire = 0;
+
+    bool isActiveAttack = false;
+
 
     #region Animator
     public Animator animator;
@@ -47,6 +60,12 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
     [SerializeField]
     private float movementSpeed;
 
+    IEnumerator DeathWait()
+    {
+        TalkDialogue("Oh, no! I'm dying!", 2);
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
+    }
 
     new void Awake()
     {
@@ -77,18 +96,69 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 //bool WakeUPBIACH = false;;
 new void FixedUpdate()
     {
+        base.FixedUpdate();
+        if (flash > 0) { flash--; } else { Flash(); flash = flashPerFrames; }
+
+        if (GetIsCollidingWithFire())
+        {
+
+            if (isFire <= 0)
+            {
+                    isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
+                    Debug.Log("Set on fire");
+                    SetOnFire(true);
+                
+
+
+                //GetComponent<SpriteRenderer>().color = Color.red;
+                //StartCoroutine(whitecolor());
+            }
+            else
+            {
+
+                isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
+            }
+
+
+
+
+        }
+
+
         rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y);
 
         isMovingHorizontal = rb.velocity.x != 0;
         Unstuck();
         Flip();
 
+
+
     }
 
 
 
 
+    private void Flash()
+    {
+        if (isFire > 0)
+        {
+            TakeDamage(damageFromFire);
+            isFire--;
+            //Debug.Log(hasFireResistance);
+            if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
+            else
+            {
+                isFlashed = true;
+                GetComponent<SpriteRenderer>().color = new Color((float)255 / 255, (float)79 / 255, 0);
+            }
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+            SetOnFire(false);
+        }
 
+    }
 
     private void Flip()
     {
@@ -119,7 +189,27 @@ new void FixedUpdate()
 
     }
 
+    public IEnumerator EnemyAttackOneSecond()
+    {
+        
+        isActiveAttack = true;
+        EnemyAttack.SetActive(true);
+        yield return new WaitForSeconds(1);
+        EnemyAttack.SetActive(false);
+        isActiveAttack = false;
 
+    }
+
+    public void ShouldAttack()
+    {
+
+        
+        if (!isActiveAttack)
+        {
+            Debug.Log("jdksjdk");
+            StartCoroutine(EnemyAttackOneSecond());
+        }
+    }
 
     public void Attack_Down()
     {
@@ -204,10 +294,6 @@ new void FixedUpdate()
         Debug.Log("Enemy collided with an enemy attack");
     }
 
-    override public void CollidedWithOrb(Collider2D collision)
-    {
-        Debug.Log("Enemy is touching an orb");
-    }
 
     override public void CollidedWithPlayer(Collider2D collision)
     {
@@ -222,14 +308,16 @@ new void FixedUpdate()
 
     #endregion
 
+    
+
     #region IMortal Methods 
     override public void Died()
     {
-        //base.Died();
-        Debug.Log("Enemy died");
-
-        //Change this:
-        gameObject.SetActive(false);
+        base.Died();
+        SetOnFire(false);
+        animator.SetTrigger("Death");
+        HorizontalInput(0);
+        StartCoroutine(DeathWait());
     }
 
 
