@@ -5,6 +5,27 @@ using UnityEngine;
 
 public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 {
+    public float fallMultiplier = 3.5f;
+    public float lowJumpMultiplier = 2f;
+    [SerializeField]
+    private GameObject EnemyAttack;
+
+    [SerializeField]
+    private int damageFromFire;
+    private int damageFromFireValue;
+
+    private int framesPerSecond = 60;
+    private int flashPerFrames = 6;
+    private int flash = 0;
+    private bool isFlashed = false;
+
+    private int secondsToBurn = 3;
+
+    private int isFire = 0;
+
+    bool isActiveAttack = false;
+
+
     #region Animator
     public Animator animator;
     #endregion
@@ -40,6 +61,12 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
     [SerializeField]
     private float movementSpeed;
 
+    IEnumerator DeathWait()
+    {
+        TalkDialogue("Oh, no! I'm dying!", 2);
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
+    }
 
     new void Awake()
     {
@@ -63,22 +90,89 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     }
 
-    //bool WakeUPBIACH = false;;
-    new void FixedUpdate()
+
+
+
+
+//bool WakeUPBIACH = false;;
+new void FixedUpdate()
     {
+        base.FixedUpdate();
+        if (flash > 0) { flash--; } else { Flash(); flash = flashPerFrames; }
+
+        if (GetIsCollidingWithFire())
+        {
+
+            if (isFire <= 0)
+            {
+                    isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
+                    Debug.Log("Set on fire");
+                    SetOnFire(true);
+                
+
+
+                //GetComponent<SpriteRenderer>().color = Color.red;
+                //StartCoroutine(whitecolor());
+            }
+            else
+            {
+
+                isFire = secondsToBurn * (framesPerSecond / flashPerFrames);
+            }
+
+
+
+
+        }
+
 
         rb.velocity = new Vector3(horizontalInput * movementSpeed, rb.velocity.y);
 
         isMovingHorizontal = rb.velocity.x != 0;
         Unstuck();
         Flip();
-        
+
+
+        //Gravity hot fix
+        if (rb.velocity.y < 0)
+        {
+            rb.gravityScale = GetCurrentGravityScale() * fallMultiplier;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            rb.gravityScale = GetCurrentGravityScale() * lowJumpMultiplier;
+        }
+        else
+        {
+            rb.gravityScale = GetCurrentGravityScale() * 1f;
+        }
+
     }
 
-    
- 
 
+   
 
+    private void Flash()
+    {
+        if (isFire > 0)
+        {
+            TakeDamage(damageFromFire);
+            isFire--;
+            //Debug.Log(hasFireResistance);
+            if (isFlashed) { isFlashed = false; GetComponent<SpriteRenderer>().color = Color.white; }
+            else
+            {
+                isFlashed = true;
+                GetComponent<SpriteRenderer>().color = new Color((float)255 / 255, (float)79 / 255, 0);
+            }
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+            SetOnFire(false);
+        }
+
+    }
 
     private void Flip()
     {
@@ -109,7 +203,27 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
 
     }
 
+    public IEnumerator EnemyAttackOneSecond()
+    {
+        
+        isActiveAttack = true;
+        EnemyAttack.SetActive(true);
+        yield return new WaitForSeconds(1);
+        EnemyAttack.SetActive(false);
+        isActiveAttack = false;
 
+    }
+
+    public void ShouldAttack()
+    {
+
+        
+        if (!isActiveAttack)
+        {
+            Debug.Log("jdksjdk");
+            StartCoroutine(EnemyAttackOneSecond());
+        }
+    }
 
     public void Attack_Down()
     {
@@ -194,28 +308,30 @@ public class EnemyMonster : Character, IControllable, IInteractive, IMortal
         Debug.Log("Enemy collided with an enemy attack");
     }
 
-    override public void CollidedWithOrb(Collider2D collision)
-    {
-        Debug.Log("Enemy is touching an orb");
-    }
 
     override public void CollidedWithPlayer(Collider2D collision)
     {
-        TalkDialogue("Monster","I will kill you!",5);
+        
+        TalkDialogue("Monster", "Gosho, prost li si we, ne vijdash li, che sum losh, mama ti deba..", 3);
+
+
         Debug.Log("Collided with player");
+
     }
 
 
     #endregion
 
+    
+
     #region IMortal Methods 
     override public void Died()
     {
-        //base.Died();
-        Debug.Log("Enemy died");
-
-        //Change this:
-        gameObject.SetActive(false);
+        base.Died();
+        SetOnFire(false);
+        animator.SetTrigger("Death");
+        HorizontalInput(0);
+        StartCoroutine(DeathWait());
     }
 
 

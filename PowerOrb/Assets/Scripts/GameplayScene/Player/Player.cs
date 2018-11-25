@@ -510,7 +510,7 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
     }
     override public void CollidedWithEnemyAttack(Collider2D collision)
     {
-        TakeDamage(collision.gameObject.GetComponent<Character>().GetAttack_Damage());
+        TakeDamage(collision.transform.parent.gameObject.GetComponent<Character>().GetAttack_Damage());
         Debug.Log("Player got hit by an enemy");
     }
 
