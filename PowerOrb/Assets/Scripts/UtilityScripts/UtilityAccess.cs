@@ -78,5 +78,18 @@ public class UtilityAccess : MonoBehaviour {
 
     #endregion
 
+    #region MainMenu Utilities
+    public void ShowControls()
+    {
+        if (ShowControlsUI.instance != null) 
+            ShowControlsUI.instance.FlashControls();
+      
+        
+            
+    }
 
+
+
+
+    #endregion
 }

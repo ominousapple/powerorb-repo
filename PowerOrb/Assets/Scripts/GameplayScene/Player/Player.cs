@@ -123,33 +123,39 @@ public class Player : Character, IControllable, IInteractive, IMortal, IElementa
             case OrbType.JumpOrb :
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 StartCoroutine(giveExtraJump());
+                ConsumeOrb();
                 break;
             case OrbType.InstantDeathOrb :
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 Suicide();
                 StartCoroutine(TurnHaloOnAndOff());
+                ConsumeOrb();
                 break;
             case OrbType.HealthOrb:
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 HealSelf(100);
                 StartCoroutine(TurnHaloOnAndOff());
+                ConsumeOrb();
                 break;
             case OrbType.FireResistanceOrb :
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 StartCoroutine(FireResist());
+                ConsumeOrb();
                 break;
             case OrbType.InvisibleOrb:
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 StartCoroutine(turnInvisible());
+                ConsumeOrb();
                 break;
             case OrbType.SpeedOrb:
                 playerHalo.GetComponent<SpriteRenderer>().color = orbPrefab.GetComponent<Orb>().colorsOfOrbTypes[colorIndex];
                 StartCoroutine(getSuperSpeed());
+                ConsumeOrb();
                 break;
             default:
                 break;
         }
-        ConsumeOrb();
+        
 
     }
 
