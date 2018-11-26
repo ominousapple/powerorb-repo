@@ -54,6 +54,12 @@ TagManager:
   - name: BG
     uniqueID: 3784535843
     locked: 0
+  - name: Blocks
+    uniqueID: 1594624415
+    locked: 0
+  - name: OtherBlocks
+    uniqueID: 471219111
+    locked: 0
   - name: Orbs
     uniqueID: 2794495631
     locked: 0
@@ -62,9 +68,6 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3762089863
-    locked: 0
-  - name: Blocks
-    uniqueID: 1594624415
     locked: 0
   - name: Lava
     uniqueID: 1869277219
