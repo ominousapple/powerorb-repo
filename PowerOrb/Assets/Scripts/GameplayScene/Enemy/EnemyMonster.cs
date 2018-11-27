@@ -312,7 +312,7 @@ new void FixedUpdate()
     override public void CollidedWithPlayer(Collider2D collision)
     {
         
-        TalkDialogue("Monster", "Gosho, prost li si we, ne vijdash li, che sum losh, mama ti deba..", 3);
+        TalkDialogue("Monster", "I'm evil and I'll kill you!!", 3);
 
 
         Debug.Log("Collided with player");
